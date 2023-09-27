@@ -4,8 +4,8 @@ import '../classes/books.dart';
 
 class BookDao {
   static const String tableSQL = 'CREATE TABLE $_tableName('
-      '$_id INTEGER PRIMARY KEY, '
-      '$_title TEXT, '
+      '$_id INTEGER PRIMARY KEY,'
+      '$_title TEXT,'
       '$_author TEXT,'
       '$_image TEXT,'
       '$_progress REAL,'
@@ -22,7 +22,7 @@ class BookDao {
       '$_type TEXT,'
       '$_howToRead TEXT,'
       '$_goal TEXT,'
-      '$_status TEXT,'
+      '$_status TEXT'
       ')';
 
   static const String _tableName = "booksTable";
@@ -108,11 +108,11 @@ class BookDao {
     return toList(result);
   }
 
-  List<Book> toList(List<Map<String, dynamic>> listaDeTarefas) {
+  List<Book> toList(List<Map<String, dynamic>> booksList) {
     print("Convertendo to List: ");
     final List<Book> tarefas = [];
 
-    for (Map<String, dynamic> line in listaDeTarefas) {
+    for (Map<String, dynamic> line in booksList) {
       final Book tarefa = Book(
           id: line[_id],
           title: line[_title],
@@ -140,7 +140,6 @@ class BookDao {
   delete(String id) async {
     print("Deletando tarefa: $id");
     final Database db = await getDatabase();
-    return db
-        .delete(_tableName, where: '$_id = ?', whereArgs: [id]);
+    return db.delete(_tableName, where: '$_id = ?', whereArgs: [id]);
   }
 }

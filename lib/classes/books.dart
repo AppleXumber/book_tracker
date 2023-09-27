@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import '../flutter_flow/flutter_flow_util.dart';
 
 class Book {
@@ -30,29 +28,28 @@ class Book {
   String? goal;
   String? status; // toRead, reading, read
 
-  Book({
-    required this.id,
-    required this.title,
-    required this.author,
-    required this.pages,
-    this.chapters,
-    this.synopsis,
-    this.publisher,
-    this.publicationDate,
-    this.editionPublicationDate,
-    this.isbn10,
-    this.isbn13,
-    this.type,
-    this.howToRead,
-    this.startReading,
-    this.image,
-    this.status,
-    this.progress,
-    this.language,
-    this.tags,
-    this.endReading,
-    this.goal
-  });
+  Book(
+      {required this.id,
+      required this.title,
+      required this.author,
+      required this.pages,
+      this.chapters,
+      this.synopsis,
+      this.publisher,
+      this.publicationDate,
+      this.editionPublicationDate,
+      this.isbn10,
+      this.isbn13,
+      this.type,
+      this.howToRead,
+      this.startReading,
+      this.image,
+      this.status,
+      this.progress,
+      this.language,
+      this.tags,
+      this.endReading,
+      this.goal});
 
   setProgress() {
     final dayStart = DateFormat("dd/MM/yyyy").format(DateTime.now());
@@ -92,7 +89,6 @@ class Book {
   }
 
   showSummary() {}
-
 
   Map<String, dynamic> toJson() {
     return {
@@ -186,8 +182,6 @@ Book livroLido = Book(
   status: "toRead",
   progress: 0,
   tags: ["romance"],
-
 );
 
-
-Book emptyBook = Book(id: -1, title: "", author: "author", pages: -1);
+Book emptyBook = Book(id: -1, title: "", author: "", pages: -1);
