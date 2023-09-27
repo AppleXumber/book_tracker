@@ -38,7 +38,7 @@ class BookDao {
   static const String _synopsis = "synopsis";
   static const String _publisher = "publisher";
   static const String _publicationDate = "publicationDate";
-  static const String _editionPublicationDate = "editonPublicationDate";
+  static const String _editionPublicationDate = "editionPublicationDate";
   static const String _isbn10 = "isbn10";
   static const String _isbn13 = "isbn13";
   static const String _type = "type";
