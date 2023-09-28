@@ -1,7 +1,6 @@
 import '../../classes/books.dart';
 import '/components/drawer_widget.dart';
-import '/components/reading_done_widget.dart';
-import '/components/reading_future_widget.dart';
+
 import '/components/bookSummary_widget.dart';
 import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
@@ -153,9 +152,9 @@ class _LibraryWidgetState extends State<LibraryWidget> {
                           mainAxisSize: MainAxisSize.max,
                           children: [
                             wrapWithModel(
-                              model: _model.readingDoneModel,
+                              model: _model.bookSummaryModel,
                               updateCallback: () => setState(() {}),
-                              child: bookSummary(livroLido),
+                              child: BookSummary(livroLido),
                             ),
                           ],
                         ),
@@ -194,9 +193,9 @@ class _LibraryWidgetState extends State<LibraryWidget> {
                         ),
                         collapsed: Container(),
                         expanded: wrapWithModel(
-                          model: _model.readingInProgressModel,
+                          model: _model.bookSummaryModel,
                           updateCallback: () => setState(() {}),
-                          child: bookSummary(livro),
+                          child: BookSummary(livro),
                         ),
                         theme: ExpandableThemeData(
                           tapHeaderToExpand: true,
@@ -233,9 +232,9 @@ class _LibraryWidgetState extends State<LibraryWidget> {
                         ),
                         collapsed: Container(),
                         expanded: wrapWithModel(
-                          model: _model.readingFutureModel,
+                          model: _model.bookSummaryModel,
                           updateCallback: () => setState(() {}),
-                          child: bookSummary(livroLido),
+                          child: BookSummary(livroLido),
                         ),
                         theme: ExpandableThemeData(
                           tapHeaderToExpand: true,

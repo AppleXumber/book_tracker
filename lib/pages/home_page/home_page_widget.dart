@@ -137,14 +137,14 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   wrapWithModel(
-                    model: _model.readingInProgressModel1,
+                    model: _model.bookSummaryModel,
                     updateCallback: () => setState(() {}),
-                    child: bookSummary(livro),
+                    child: BookSummary(livro),
                   ),
                   wrapWithModel(
-                    model: _model.readingInProgressModel2,
+                    model: _model.bookSummaryModel,
                     updateCallback: () => setState(() {}),
-                    child: bookSummary(livroLido),
+                    child: BookSummary(livroLido),
                   ),
                 ],
               ),
