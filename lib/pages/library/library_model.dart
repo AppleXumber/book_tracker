@@ -1,6 +1,4 @@
 import '/components/drawer_widget.dart';
-import '/components/reading_done_widget.dart';
-import '/components/reading_future_widget.dart';
 import '/components/bookSummary_widget.dart';
 import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
@@ -18,28 +16,20 @@ class LibraryModel extends FlutterFlowModel {
   // Model for drawer component.
   late DrawerModel drawerModel;
   // Model for readingDone component.
-  late ReadingDoneModel readingDoneModel;
-  // Model for reading_in_progress component.
-  late bookSummaryModel readingInProgressModel;
-  // Model for readingFuture component.
-  late ReadingFutureModel readingFutureModel;
+  late BookSummaryModel bookSummaryModel;
+
 
   /// Initialization and disposal methods.
 
   void initState(BuildContext context) {
     drawerModel = createModel(context, () => DrawerModel());
-    readingDoneModel = createModel(context, () => ReadingDoneModel());
-    readingInProgressModel =
-        createModel(context, () => bookSummaryModel());
-    readingFutureModel = createModel(context, () => ReadingFutureModel());
+    bookSummaryModel = createModel(context, () => BookSummaryModel());
   }
 
   void dispose() {
     unfocusNode.dispose();
     drawerModel.dispose();
-    readingDoneModel.dispose();
-    readingInProgressModel.dispose();
-    readingFutureModel.dispose();
+    bookSummaryModel.dispose();
   }
 
   /// Action blocks are added here.

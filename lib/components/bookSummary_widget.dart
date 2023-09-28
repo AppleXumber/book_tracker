@@ -10,17 +10,17 @@ import 'package:provider/provider.dart';
 import 'bookSummary_model.dart';
 export 'bookSummary_model.dart';
 
-class bookSummary extends StatefulWidget {
-  bookSummary(this.book, {Key? key}) : super(key: key);
+class BookSummary extends StatefulWidget {
+  BookSummary(this.book, {Key? key}) : super(key: key);
   Book book;
 
   @override
-  _bookSummaryState createState() =>
-      _bookSummaryState();
+  _BookSummaryState createState() =>
+      _BookSummaryState();
 }
 
-class _bookSummaryState extends State<bookSummary> {
-  late bookSummaryModel _model;
+class _BookSummaryState extends State<BookSummary> {
+  late BookSummaryModel _model;
 
   @override
   void setState(VoidCallback callback) {
@@ -83,7 +83,7 @@ class _bookSummaryState extends State<bookSummary> {
   @override
   void initState() {
     super.initState();
-    _model = createModel(context, () => bookSummaryModel());
+    _model = createModel(context, () => BookSummaryModel());
   }
 
   @override
