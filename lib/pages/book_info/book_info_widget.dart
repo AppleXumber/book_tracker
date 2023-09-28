@@ -815,24 +815,10 @@ class _BookInfoWidgetState extends State<BookInfoWidget> {
                               padding: EdgeInsetsDirectional.fromSTEB(
                                   4.0, 0.0, 4.0, 0.0),
                               child: Container(
-                                width: 75.0,
-                                height: 20.0,
-                                decoration: BoxDecoration(
-                                  color: Color(0xFF4BE3DB),
-                                ),
+                                width: 500.0,
+                                height: 35.0,
                                 child: SelectionArea(
-                                    child: Text(
-                                  showData(widget.book.tags),
-                                  maxLines: 5,
-                                  style: FlutterFlowTheme.of(context)
-                                      .bodyMedium
-                                      .override(
-                                        fontFamily: 'Readex Pro',
-                                        color: FlutterFlowTheme.of(context)
-                                            .secondaryBackground,
-                                        fontSize: 14.0,
-                                      ),
-                                )),
+                                    child: TagsList(tags: widget.book.tags)),
                               ),
                             ),
                           ],
@@ -907,6 +893,28 @@ class _BookInfoWidgetState extends State<BookInfoWidget> {
         ),
       ),
     );
+  }
+}
+
+class TagsList extends StatelessWidget {
+  TagsList({
+    this.tags,
+    super.key,
+  });
+
+  final List<String>? tags;
+
+  final List<String> entries = <String>['A', 'B', 'C'];
+  final List<int> colorCodes = <int>[100, 100, 100];
+
+  Widget build(BuildContext context) {
+    return ListView.builder(
+        padding: const EdgeInsets.all(8),
+        scrollDirection: Axis.horizontal,
+        itemCount: tags?.length,
+        itemBuilder: (BuildContext context, int index) {
+          return Center(child: Text('${tags?[index]}'));
+        });
   }
 }
 

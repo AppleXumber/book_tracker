@@ -69,6 +69,9 @@ class _FormBooksWidgetState extends State<FormBooksWidget> {
     _model.titleFieldController.text = showData(book.title);
     _model.authorFieldController.text = showData(book.author);
     _model.pagesFieldController.text = showData(book.pages);
+    if(book.pages < 0) {
+      _model.pagesFieldController.text = "";
+    }
     _model.chapFieldController.text = showData(book.chapters);
     _model.descFieldController.text = showData(book.synopsis);
     _model.trackerGoalController.text = showData(book.goal);

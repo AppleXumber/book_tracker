@@ -70,8 +70,8 @@ class BookDao {
 
     Map<String, dynamic> bookMap = toMap(book);
 
-    await db.update(_tableName, bookMap);
-    return true;
+    return await db.insert(_tableName, bookMap);
+
   }
 
   Map<String, dynamic> toMap(Book book) {

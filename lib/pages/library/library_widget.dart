@@ -1,3 +1,5 @@
+import 'package:book_tracker/components/fab_form_book.dart';
+
 import '../../classes/books.dart';
 import '/components/drawer_widget.dart';
 
@@ -49,25 +51,7 @@ class _LibraryWidgetState extends State<LibraryWidget> {
         backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
         floatingActionButton: Padding(
           padding: const EdgeInsets.only(bottom: 58, right: 12),
-          child: FloatingActionButton(
-            onPressed: () async {},
-            backgroundColor: Color(0xFF4B9AE3),
-            elevation: 8.0,
-            child: FlutterFlowIconButton(
-              borderRadius: 25.0,
-              buttonSize: MediaQuery.sizeOf(context).width * 1.0,
-              fillColor: FlutterFlowTheme.of(context).secondary,
-              icon: Icon(
-                Icons.add,
-                color: Colors.white,
-                size: 30.0,
-              ),
-              onPressed: () {
-                print('IconButton pressed ...');
-                context.pushNamed('form_books');
-              },
-            ),
-          ),
+          child: FabFormBook()
         ),
         drawer: Drawer(
           elevation: 16.0,

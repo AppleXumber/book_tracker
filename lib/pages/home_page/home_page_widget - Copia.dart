@@ -45,9 +45,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
       onTap: () => FocusScope.of(context).requestFocus(_model.unfocusNode),
       child: Scaffold(
         key: scaffoldKey,
-        backgroundColor: FlutterFlowTheme
-            .of(context)
-            .primaryBackground,
+        backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
         floatingActionButton: Padding(
           padding: const EdgeInsets.only(bottom: 58, right: 12),
           child: FabFormBook(),
@@ -61,9 +59,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
           ),
         ),
         appBar: AppBar(
-          backgroundColor: FlutterFlowTheme
-              .of(context)
-              .primary,
+          backgroundColor: FlutterFlowTheme.of(context).primary,
           automaticallyImplyLeading: false,
           leading: Padding(
             padding: EdgeInsetsDirectional.fromSTEB(18.0, 0.0, 0.0, 0.0),
@@ -86,14 +82,11 @@ class _HomePageWidgetState extends State<HomePageWidget> {
             FFLocalizations.of(context).getText(
               'bpu175q4' /* BookTracker */,
             ),
-            style: FlutterFlowTheme
-                .of(context)
-                .bodyMedium
-                .override(
-              fontFamily: 'Readex Pro',
-              color: Colors.white,
-              fontSize: 24.0,
-            ),
+            style: FlutterFlowTheme.of(context).bodyMedium.override(
+                  fontFamily: 'Readex Pro',
+                  color: Colors.white,
+                  fontSize: 24.0,
+                ),
           ),
           actions: [
             Padding(
@@ -108,7 +101,6 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                   //getDatabase();
                   //print(BookDao());
                   //BookDao().save(livro);
-                  //BookDao().save(livroLido);
                   final livroDao = BookDao().findAll();
                   print(livroDao);
                 },
@@ -123,67 +115,22 @@ class _HomePageWidgetState extends State<HomePageWidget> {
           child: Align(
             alignment: AlignmentDirectional(0.00, -1.00),
             child: SingleChildScrollView(
-              child: FutureBuilder<List<Book>>(
-                future: BookDao().findAll(),
-                builder: (context, snapshot) {
-                  List<Book>? itens = snapshot.data;
-                  switch (snapshot.connectionState) {
-                    case ConnectionState.none:
-                      return const Center(
-                        child: Column(
-                          children: [
-                            CircularProgressIndicator(),
-                            Text('Carregando...')
-                          ],
-                        ),
-                      );
-                    case ConnectionState.waiting:
-                      return const Center(
-                        child: Column(
-                          children: [
-                            CircularProgressIndicator(),
-                            Text('Carregando...')
-                          ],
-                        ),
-                      );
-                    case ConnectionState.active:
-                      return const Center(
-                        child: Column(
-                          children: [
-                            CircularProgressIndicator(),
-                            Text('Carregando...')
-                          ],
-                        ),
-                      );
-
-
-                    case ConnectionState.done:
-                      if (snapshot.hasData && itens != null) {
-                        if (itens.isNotEmpty) {
-                          return ListView.builder(
-                            itemCount: itens.length,
-                            itemBuilder: (BuildContext context, int index) {
-                              //final Book bookBuilder = itens[index];
-                              //return BookSummary(bookBuilder);
-                            },
-                          );
-                        }
-                        return const Center(
-                          child: Column(
-                            children: [
-                              Icon(Icons.error_outline, size: 128),
-                              Text(
-                                "Não há nenhuma tarefa",
-                                style: TextStyle(fontSize: 32),
-                              )
-                            ],
-                          ),
-                        );
-                      }
-                      return const Text("Erro ao carregar tarefas");
-                      break;
-                  }
-                },
+              child: Column(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  wrapWithModel(
+                    model: _model.bookSummaryModel,
+                    updateCallback: () => setState(() {}),
+                    child: BookSummary(livro),
+                  ),
+                  wrapWithModel(
+                    model: _model.bookSummaryModel,
+                    updateCallback: () => setState(() {}),
+                    child: BookSummary(livroLido),
+                  ),
+                ],
               ),
             ),
           ),

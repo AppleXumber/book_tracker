@@ -76,11 +76,6 @@ class Book {
 
     quantidadePaginas / quantidade dias
     = Paginas diárias
-
-
-
-
-
      */
   }
 
@@ -160,7 +155,7 @@ Book livro = Book(
     startReading: DateFormat("dd/MM/yyyy").format(DateTime.now()),
     status: "reading",
     progress: 168,
-    tags: ["Romance"],
+    tags: ["Romance", "Fantasia"],
     type: "físico",
     language: "Português",
     editionPublicationDate: "15/07/2019");
