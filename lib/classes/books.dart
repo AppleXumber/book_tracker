@@ -155,7 +155,7 @@ Book livro = Book(
     startReading: DateFormat("dd/MM/yyyy").format(DateTime.now()),
     status: "reading",
     progress: 168,
-    tags: ["Romance", "Fantasia"],
+    tags: ["Romance", "Fantasia", "Épico", "Medieval"],
     type: "físico",
     language: "Português",
     editionPublicationDate: "15/07/2019");
@@ -176,7 +176,7 @@ Book livroLido = Book(
   startReading: DateFormat("dd/MM/yyyy").format(DateTime.now()),
   status: "toRead",
   progress: 0,
-  tags: ["romance"],
+  tags: ["Romance"],
 );
 
 Book emptyBook = Book(id: -1, title: "", author: "", pages: -1);

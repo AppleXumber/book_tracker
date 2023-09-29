@@ -1,3 +1,4 @@
+import "dart:math";
 import '/flutter_flow/flutter_flow_expanded_image_view.dart';
 import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
@@ -904,16 +905,61 @@ class TagsList extends StatelessWidget {
 
   final List<String>? tags;
 
-  final List<String> entries = <String>['A', 'B', 'C'];
-  final List<int> colorCodes = <int>[100, 100, 100];
+  int calculateValueFromWord(String word) {
+    int value = 0;
+    for (int i = 0; i < word.length; i++) {
+      value += word.codeUnitAt(i);
+    }
+
+    value = (value * 37 + 13) % 256;
+
+    return value;
+  }
+
+  Color calculateWordColor(String word) {
+    int wordValue = calculateValueFromWord(word ?? '');
+    String piString = pi.toString();
+    String eString = e.toString();
+    int randomPi = int.parse(piString.substring(word.length, word.length + 1));
+    int randomE = int.parse(eString.substring(word.length, word.length + 1));
+
+    int red = (wordValue * 5 * randomPi) % 256;
+    int green = (wordValue * 7);
+    green = (green * (randomE + randomPi * 2)) % 256;
+    int blue = ((wordValue * 11) * randomE - randomPi) % 256;
+    //print("$word - Blue: $blue Red: $red Green: $green");
+
+    return Color.fromRGBO(red, green, blue, 1.0);
+  }
+
+  Color determineTextColor(Color backgroundColor) {
+    final luminance = (0.299 * backgroundColor.red +
+            0.587 * backgroundColor.green +
+            0.114 * backgroundColor.blue) /
+        255;
+
+    return luminance > 0.5 ? Colors.black : Colors.white;
+  }
 
   Widget build(BuildContext context) {
     return ListView.builder(
-        padding: const EdgeInsets.all(8),
         scrollDirection: Axis.horizontal,
         itemCount: tags?.length,
         itemBuilder: (BuildContext context, int index) {
-          return Center(child: Text('${tags?[index]}'));
+          String? tagText = tags?[index];
+          return Center(
+              child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Container(
+              padding: EdgeInsetsDirectional.symmetric(horizontal: 4.0),
+              child: Text(
+                tagText!,
+                style: TextStyle(
+                    color: determineTextColor(calculateWordColor(tagText))),
+              ),
+              color: calculateWordColor(tagText),
+            ),
+          ));
         });
   }
 }
