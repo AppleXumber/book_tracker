@@ -180,7 +180,12 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                           ),
                         );
                       }
-                      return const Text("Erro ao carregar tarefas");
+                      return Column(
+                        children: [
+                          BookSummary(livroLido),
+                          BookSummary(livro),
+                        ],
+                      );
                       break;
                   }
                 },

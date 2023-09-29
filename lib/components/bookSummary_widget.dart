@@ -22,6 +22,14 @@ class BookSummary extends StatefulWidget {
 class _BookSummaryState extends State<BookSummary> {
   late BookSummaryModel _model;
 
+  showData(data) {
+    if (data != null) {
+      return "${data}";
+    } else if (data == null) {
+      return "";
+    }
+  }
+
   @override
   void setState(VoidCallback callback) {
     super.setState(callback);
@@ -212,7 +220,7 @@ class _BookSummaryState extends State<BookSummary> {
                                           ),
                                     ),
                                     Text(
-                                      widget.book.endReading.toString(),
+                                      showData(widget.book.endReading),
                                       style: FlutterFlowTheme.of(context)
                                           .bodyMedium
                                           .override(
