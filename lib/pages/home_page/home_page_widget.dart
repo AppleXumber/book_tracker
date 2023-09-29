@@ -45,9 +45,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
       onTap: () => FocusScope.of(context).requestFocus(_model.unfocusNode),
       child: Scaffold(
         key: scaffoldKey,
-        backgroundColor: FlutterFlowTheme
-            .of(context)
-            .primaryBackground,
+        backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
         floatingActionButton: Padding(
           padding: const EdgeInsets.only(bottom: 58, right: 12),
           child: FabFormBook(),
@@ -61,9 +59,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
           ),
         ),
         appBar: AppBar(
-          backgroundColor: FlutterFlowTheme
-              .of(context)
-              .primary,
+          backgroundColor: FlutterFlowTheme.of(context).primary,
           automaticallyImplyLeading: false,
           leading: Padding(
             padding: EdgeInsetsDirectional.fromSTEB(18.0, 0.0, 0.0, 0.0),
@@ -86,14 +82,11 @@ class _HomePageWidgetState extends State<HomePageWidget> {
             FFLocalizations.of(context).getText(
               'bpu175q4' /* BookTracker */,
             ),
-            style: FlutterFlowTheme
-                .of(context)
-                .bodyMedium
-                .override(
-              fontFamily: 'Readex Pro',
-              color: Colors.white,
-              fontSize: 24.0,
-            ),
+            style: FlutterFlowTheme.of(context).bodyMedium.override(
+                  fontFamily: 'Readex Pro',
+                  color: Colors.white,
+                  fontSize: 24.0,
+                ),
           ),
           actions: [
             Padding(
@@ -108,7 +101,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                   //getDatabase();
                   //print(BookDao());
                   //BookDao().save(livro);
-                  //BookDao().save(livroLido);
+                  BookDao().save(livroLido);
                   final livroDao = BookDao().findAll();
                   print(livroDao);
                 },
@@ -156,15 +149,14 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                         ),
                       );
 
-
                     case ConnectionState.done:
                       if (snapshot.hasData && itens != null) {
                         if (itens.isNotEmpty) {
                           return ListView.builder(
                             itemCount: itens.length,
                             itemBuilder: (BuildContext context, int index) {
-                              //final Book bookBuilder = itens[index];
-                              //return BookSummary(bookBuilder);
+                              final Book bookBuilder = itens[index];
+                              return BookSummary(bookBuilder);
                             },
                           );
                         }
@@ -173,7 +165,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                             children: [
                               Icon(Icons.error_outline, size: 128),
                               Text(
-                                "Não há nenhuma tarefa",
+                                "Não há nenhum livro",
                                 style: TextStyle(fontSize: 32),
                               )
                             ],
@@ -182,6 +174,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                       }
                       return Column(
                         children: [
+                          Text("Erro, não foi possível encontrar os livros"),
                           BookSummary(livroLido),
                           BookSummary(livro),
                         ],
@@ -197,5 +190,3 @@ class _HomePageWidgetState extends State<HomePageWidget> {
     );
   }
 }
-
-

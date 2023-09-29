@@ -975,10 +975,10 @@ class textSynopsis extends StatefulWidget {
   final int maxLines;
 
   @override
-  State<textSynopsis> createState() => _textSynopsisState();
+  State<textSynopsis> createState() => _TextSynopsisState();
 }
 
-class _textSynopsisState extends State<textSynopsis> {
+class _TextSynopsisState extends State<textSynopsis> {
   bool _isExpanded = false;
 
   @override
