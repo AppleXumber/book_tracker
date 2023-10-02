@@ -1,13 +1,15 @@
 import 'package:flutter/foundation.dart';
 import 'package:sqflite/sqflite.dart' as sql;
 
+import '../classes/books.dart';
+
 class SQLHelper {
   static Future<void> createTables(sql.Database database) async {
     await database.execute(tableSQL);
   }
 
   static const String tableSQL = 'CREATE TABLE $_tableName('
-      '$_id INTEGER PRIMARY KEY,'
+      '$_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,'
       '$_title TEXT,'
       '$_author TEXT,'
       '$_image TEXT,'
@@ -25,7 +27,8 @@ class SQLHelper {
       '$_type TEXT,'
       '$_howToRead TEXT,'
       '$_goal TEXT,'
-      '$_status TEXT'
+      '$_status TEXT,'
+      'createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP'
       ')';
 
   static const String _tableName = "booksTable";
@@ -55,7 +58,7 @@ class SQLHelper {
 
   static Future<sql.Database> db() async {
     return sql.openDatabase(
-      'dbBook.db',
+      'dbBooks.db',
       version: 1,
       onCreate: (sql.Database database, int version) async {
         await createTables(database);
@@ -64,11 +67,10 @@ class SQLHelper {
   }
 
   // Create new item (journal)
-  static Future<int> createItem(String title, String? descrption) async {
+  static Future<int> createItem(Book book) async {
     final db = await SQLHelper.db();
-
-    final data = {'title': title, 'description': descrption};
-    final id = await db.insert('items', data,
+    final data = toMap(book);
+    final id = await db.insert('$_tableName', data,
         conflictAlgorithm: sql.ConflictAlgorithm.replace);
     return id;
   }
@@ -76,29 +78,23 @@ class SQLHelper {
   // Read all items (journals)
   static Future<List<Map<String, dynamic>>> getItems() async {
     final db = await SQLHelper.db();
-    return db.query('items', orderBy: "id");
+    return db.query('$_tableName', orderBy: "id");
   }
 
   // Read a single item by id
   // The app doesn't use this method but I put here in case you want to see it
   static Future<List<Map<String, dynamic>>> getItem(int id) async {
     final db = await SQLHelper.db();
-    return db.query('items', where: "id = ?", whereArgs: [id], limit: 1);
+    return db.query('$_tableName', where: "id = ?", whereArgs: [id], limit: 1);
   }
 
   // Update an item by id
-  static Future<int> updateItem(
-      int id, String title, String? descrption) async {
+  static Future<int> updateItem(int id, Book book) async {
     final db = await SQLHelper.db();
-
-    final data = {
-      'title': title,
-      'description': descrption,
-      'createdAt': DateTime.now().toString()
-    };
+    final data = toMap(book);
 
     final result =
-        await db.update('items', data, where: "id = ?", whereArgs: [id]);
+        await db.update('$_tableName', data, where: "id = ?", whereArgs: [id]);
     return result;
   }
 
@@ -106,9 +102,35 @@ class SQLHelper {
   static Future<void> deleteItem(int id) async {
     final db = await SQLHelper.db();
     try {
-      await db.delete("items", where: "id = ?", whereArgs: [id]);
+      await db.delete("$_tableName", where: "id = ?", whereArgs: [id]);
     } catch (err) {
       debugPrint("Something went wrong when deleting an item: $err");
     }
+  }
+
+  static Map<String, dynamic> toMap(Book book) {
+    print("Convertendo book em map");
+    final Map<String, dynamic> booksMap = Map();
+    booksMap[_title] = book.title;
+    booksMap[_image] = book.image;
+    booksMap[_id] = book.id;
+    booksMap[_author] = book.author;
+    booksMap[_progress] = book.progress;
+    booksMap[_pages] = book.pages;
+    booksMap[_chapters] = book.chapters;
+    booksMap[_startReading] = book.startReading;
+    booksMap[_endReading] = book.endReading;
+    booksMap[_synopsis] = book.synopsis;
+    booksMap[_publisher] = book.publisher;
+    booksMap[_publicationDate] = book.publicationDate;
+    booksMap[_editionPublicationDate] = book.editionPublicationDate;
+    booksMap[_isbn10] = book.isbn10;
+    booksMap[_isbn13] = book.isbn13;
+    booksMap[_type] = book.type;
+    booksMap[_howToRead] = book.howToRead;
+    booksMap[_goal] = book.goal;
+
+    print("Mapa de tarefas: $booksMap");
+    return booksMap;
   }
 }

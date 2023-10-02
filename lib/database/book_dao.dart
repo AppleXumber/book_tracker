@@ -71,7 +71,6 @@ class BookDao {
     Map<String, dynamic> bookMap = toMap(book);
 
     return await db.insert(_tableName, bookMap);
-
   }
 
   Map<String, dynamic> toMap(Book book) {

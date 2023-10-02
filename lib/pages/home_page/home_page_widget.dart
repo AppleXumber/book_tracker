@@ -10,7 +10,7 @@ import 'home_page_model.dart';
 export 'home_page_model.dart';
 import '../../classes/books.dart';
 import "../../database/book_dao.dart";
-import "../../database/database.dart";
+import "../../database/sql_helper.dart";
 
 class HomePageWidget extends StatefulWidget {
   const HomePageWidget({Key? key}) : super(key: key);
@@ -97,14 +97,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                   color: Colors.white,
                   size: 24.0,
                 ),
-                onPressed: () {
-                  //getDatabase();
-                  //print(BookDao());
-                  //BookDao().save(livro);
-                  BookDao().save(livroLido);
-                  final livroDao = BookDao().findAll();
-                  print(livroDao);
-                },
+                onPressed: () {},
               ),
             ),
           ],
@@ -116,10 +109,10 @@ class _HomePageWidgetState extends State<HomePageWidget> {
           child: Align(
             alignment: AlignmentDirectional(0.00, -1.00),
             child: SingleChildScrollView(
-              child: FutureBuilder<List<Book>>(
-                future: BookDao().findAll(),
+              child: FutureBuilder<List<Map<String, dynamic>>>(
+                future: SQLHelper.getItems(),
                 builder: (context, snapshot) {
-                  List<Book>? itens = snapshot.data;
+                  List<Map<String, dynamic>>? itens = snapshot.data;
                   switch (snapshot.connectionState) {
                     case ConnectionState.none:
                       return const Center(
@@ -153,9 +146,12 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                       if (snapshot.hasData && itens != null) {
                         if (itens.isNotEmpty) {
                           return ListView.builder(
+                            scrollDirection: Axis.vertical,
+                            shrinkWrap: true,
                             itemCount: itens.length,
                             itemBuilder: (BuildContext context, int index) {
-                              final Book bookBuilder = itens[index];
+                              final Book bookBuilder =
+                                  Book.fromJson(itens[index]);
                               return BookSummary(bookBuilder);
                             },
                           );

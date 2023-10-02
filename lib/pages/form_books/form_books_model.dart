@@ -71,7 +71,7 @@ class FormBooksModel extends FlutterFlowModel {
   // State field(s) for typeRadio widget.
   FormFieldController<String>? typeRadioValueController;
   // State field(s) for tagFIeld widget.
-  TextEditingController? tagFIeldController;
+  TextEditingController? tagFieldController;
   String? Function(BuildContext, String?)? tagFIeldControllerValidator;
   // State field(s) for publisherField widget.
   TextEditingController? publisherFieldController;
@@ -108,7 +108,7 @@ class FormBooksModel extends FlutterFlowModel {
     chapFieldController?.dispose();
     descFieldController?.dispose();
     trackerGoalController?.dispose();
-    tagFIeldController?.dispose();
+    tagFieldController?.dispose();
     publisherFieldController?.dispose();
     isbn10FieldController?.dispose();
     isbn13FieldController?.dispose();

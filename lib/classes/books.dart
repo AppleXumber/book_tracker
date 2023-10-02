@@ -116,7 +116,7 @@ class Book {
       id: json['id'],
       title: json['title'],
       author: json['author'],
-      progress: json['progress'],
+      progress: json['progress'] is int ? json['progress'] : 0,
       pages: json['pages'],
       image: json['image'],
       chapters: json['chapters'],

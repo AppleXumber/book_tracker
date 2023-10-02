@@ -213,7 +213,10 @@ class _BookInfoWidgetState extends State<BookInfoWidget> {
                                         ),
                                         onPressed: () {
                                           print('IconButton pressed ...');
-                                          //print(widget.book.startReading);
+                                          print(widget.book.startReading);
+                                          print(widget.book.endReading);
+                                          print(widget.book.language);
+                                          print(widget.book.tags);
                                           print(widget.book.type);
                                         },
                                       ),
@@ -943,6 +946,7 @@ class TagsList extends StatelessWidget {
 
   Widget build(BuildContext context) {
     return ListView.builder(
+      shrinkWrap: true,
         scrollDirection: Axis.horizontal,
         itemCount: tags?.length,
         itemBuilder: (BuildContext context, int index) {

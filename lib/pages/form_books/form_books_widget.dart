@@ -1,3 +1,5 @@
+import 'package:book_tracker/database/sql_helper.dart';
+
 import '../../classes/books.dart';
 import '/flutter_flow/flutter_flow_drop_down.dart';
 import '/flutter_flow/flutter_flow_icon_button.dart';
@@ -44,7 +46,7 @@ class _FormBooksWidgetState extends State<FormBooksWidget> {
     _model.chapFieldController ??= TextEditingController();
     _model.descFieldController ??= TextEditingController();
     _model.trackerGoalController ??= TextEditingController();
-    _model.tagFIeldController ??= TextEditingController();
+    _model.tagFieldController ??= TextEditingController();
     _model.publisherFieldController ??= TextEditingController();
     _model.isbn10FieldController ??= TextEditingController();
     _model.isbn13FieldController ??= TextEditingController();
@@ -66,7 +68,6 @@ class _FormBooksWidgetState extends State<FormBooksWidget> {
     Book book = Book.fromJson(bookMap);
 
     _model.titleFieldController.text = showData(book.title);
-    _model.titleFieldController.text = showData(book.title);
     _model.authorFieldController.text = showData(book.author);
     _model.pagesFieldController.text = showData(book.pages);
     if(book.pages < 0) {
@@ -75,7 +76,7 @@ class _FormBooksWidgetState extends State<FormBooksWidget> {
     _model.chapFieldController.text = showData(book.chapters);
     _model.descFieldController.text = showData(book.synopsis);
     _model.trackerGoalController.text = showData(book.goal);
-    _model.tagFIeldController.text = showData(book.tags);
+    _model.tagFieldController.text = showData(book.tags);
     _model.publisherFieldController.text = showData(book.publisher);
     _model.isbn10FieldController.text = showData(book.isbn10);
     _model.isbn13FieldController.text = showData(book.isbn13);
@@ -726,7 +727,7 @@ class _FormBooksWidgetState extends State<FormBooksWidget> {
                                                   8.0, 0.0, 8.0, 0.0),
                                           child: TextFormField(
                                             controller:
-                                                _model.tagFIeldController,
+                                                _model.tagFieldController,
                                             autofocus: true,
                                             textCapitalization:
                                                 TextCapitalization.sentences,
@@ -1273,7 +1274,41 @@ class _FormBooksWidgetState extends State<FormBooksWidget> {
                                   0.0, 0.0, 0.0, 30.0),
                               child: FFButtonWidget(
                                 onPressed: () async {
+                                  String title = _model.titleFieldController.text;
+                                  String author = _model.authorFieldController.text;
+                                  String pages = _model.pagesFieldController.text;
+                                  String chapters = _model.chapFieldController.text;
+                                  String synopsis = _model.descFieldController.text;
+                                  String goal = _model.trackerGoalController.text;
+                                  String tags = _model.tagFieldController.text;
+                                  String publisher = _model.publisherFieldController.text;
+                                  String isbn10 = _model.isbn10FieldController.text;
+                                  String isbn13 = _model.isbn13FieldController.text;
+                                  String edition = _model.editionFieldController.text;
+                                  String language = _model.langFieldController.text;
+                                  String publicationDate = _model.dateFieldController.text;
+
+
+
+                                  Book book = Book(
+                                    id: 0,
+                                    title: title,
+                                    author: author,
+                                    pages: int.tryParse(pages) ?? 0,
+                                    chapters: int.tryParse(chapters) ?? 0,
+                                    synopsis: synopsis,
+                                    goal: goal,
+                                    tags: tags.split(',').map((tag) => tag.trim()).toList(),
+                                    publisher: publisher,
+                                    isbn10: int.tryParse(isbn10) ?? 0,
+                                    isbn13: int.tryParse(isbn13) ?? 0,
+                                    editionPublicationDate: edition,
+                                    language: language,
+                                    publicationDate: publicationDate,
+                                  );
+                                  SQLHelper.createItem(book);
                                   context.safePop();
+
                                 },
                                 text: FFLocalizations.of(context).getText(
                                   '7hzfgcuf' /* Salvar */,
