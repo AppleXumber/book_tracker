@@ -9,7 +9,6 @@ import 'package:provider/provider.dart';
 import 'home_page_model.dart';
 export 'home_page_model.dart';
 import '../../classes/books.dart';
-import "../../database/book_dao.dart";
 import "../../database/sql_helper.dart";
 
 class HomePageWidget extends StatefulWidget {
