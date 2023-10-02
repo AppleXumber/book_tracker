@@ -97,7 +97,16 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                   color: Colors.white,
                   size: 24.0,
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  setState(() {
+                    //SQLHelper.createItem(livro);
+                    //SQLHelper.createItem(livroLido);
+                    //SQLHelper.deleteItem(1);
+                    //SQLHelper.deleteItem(2);
+
+
+                  });
+                },
               ),
             ),
           ],

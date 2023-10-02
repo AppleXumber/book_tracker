@@ -70,7 +70,7 @@ class _FormBooksWidgetState extends State<FormBooksWidget> {
     _model.titleFieldController.text = showData(book.title);
     _model.authorFieldController.text = showData(book.author);
     _model.pagesFieldController.text = showData(book.pages);
-    if(book.pages < 0) {
+    if (book.pages < 0) {
       _model.pagesFieldController.text = "";
     }
     _model.chapFieldController.text = showData(book.chapters);
@@ -1274,21 +1274,32 @@ class _FormBooksWidgetState extends State<FormBooksWidget> {
                                   0.0, 0.0, 0.0, 30.0),
                               child: FFButtonWidget(
                                 onPressed: () async {
-                                  String title = _model.titleFieldController.text;
-                                  String author = _model.authorFieldController.text;
-                                  String pages = _model.pagesFieldController.text;
-                                  String chapters = _model.chapFieldController.text;
-                                  String synopsis = _model.descFieldController.text;
-                                  String goal = _model.trackerGoalController.text;
-                                  String tags = _model.tagFieldController.text;
-                                  String publisher = _model.publisherFieldController.text;
-                                  String isbn10 = _model.isbn10FieldController.text;
-                                  String isbn13 = _model.isbn13FieldController.text;
-                                  String edition = _model.editionFieldController.text;
-                                  String language = _model.langFieldController.text;
-                                  String publicationDate = _model.dateFieldController.text;
+                                  String title =
+                                      _model.titleFieldController.text;
+                                  String author =
+                                      _model.authorFieldController.text;
+                                  String pages =
+                                      _model.pagesFieldController.text;
+                                  String chapters =
+                                      _model.chapFieldController.text;
+                                  String synopsis =
+                                      _model.descFieldController.text;
+                                  String goal =
+                                      _model.trackerGoalController.text;
+                                  String tags = showData(_model.tagFieldController.text);
 
 
+                                  String publisher =
+                                      _model.publisherFieldController.text;
+                                  String isbn10 =
+                                      _model.isbn10FieldController.text;
+                                  String isbn13 =
+                                      _model.isbn13FieldController.text;
+                                  String edition =
+                                      _model.editionFieldController.text;
+                                  String lang = _model.langFieldController.text;
+                                  String publicationDate =
+                                      _model.dateFieldController.text;
 
                                   Book book = Book(
                                     id: 0,
@@ -1297,18 +1308,28 @@ class _FormBooksWidgetState extends State<FormBooksWidget> {
                                     pages: int.tryParse(pages) ?? 0,
                                     chapters: int.tryParse(chapters) ?? 0,
                                     synopsis: synopsis,
+                                    startReading: DateFormat("dd/MM/yyyy")
+                                        .format(DateTime.now()),
+                                    endReading: DateFormat("dd/MM/yyyy").format(
+                                        DateTime.now().add(Duration(days: 31))),
                                     goal: goal,
-                                    tags: tags.split(',').map((tag) => tag.trim()).toList(),
+                                    image:
+                                        "https://www.lojadobolseiro.com.br/uploads/images/2020/02/76-livro-o-hobbit-capa-smaug-j-r-r-tolkien-1582738560.jpg",
+                                    tags: tags
+                                        .split(',')
+                                        .map((tag) => tag.trim())
+                                        .toList(),
                                     publisher: publisher,
-                                    isbn10: int.tryParse(isbn10) ?? 0,
-                                    isbn13: int.tryParse(isbn13) ?? 0,
+                                    isbn10: int.tryParse(isbn10),
+                                    isbn13: int.tryParse(isbn13),
                                     editionPublicationDate: edition,
-                                    language: language,
+                                    language: lang,
                                     publicationDate: publicationDate,
                                   );
-                                  SQLHelper.createItem(book);
-                                  context.safePop();
-
+                                  setState(() {
+                                    SQLHelper.createItem(book);
+                                    context.safePop();
+                                  });
                                 },
                                 text: FFLocalizations.of(context).getText(
                                   '7hzfgcuf' /* Salvar */,

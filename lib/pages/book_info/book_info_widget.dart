@@ -212,12 +212,16 @@ class _BookInfoWidgetState extends State<BookInfoWidget> {
                                           size: 36.0,
                                         ),
                                         onPressed: () {
-                                          print('IconButton pressed ...');
-                                          print(widget.book.startReading);
-                                          print(widget.book.endReading);
-                                          print(widget.book.language);
-                                          print(widget.book.tags);
-                                          print(widget.book.type);
+                                          setState(() {
+                                            print('IconButton pressed ...');
+                                            print(widget.book.language);
+                                            widget.book.tags = [
+                                              "Ficção",
+                                              "Distopia"
+                                            ];
+                                            print(widget.book.tags);
+                                            print(widget.book.type);
+                                          });
                                         },
                                       ),
                                     ],
@@ -946,11 +950,21 @@ class TagsList extends StatelessWidget {
 
   Widget build(BuildContext context) {
     return ListView.builder(
-      shrinkWrap: true,
+        shrinkWrap: true,
         scrollDirection: Axis.horizontal,
         itemCount: tags?.length,
         itemBuilder: (BuildContext context, int index) {
           String? tagText = tags?[index];
+          if (tagText == null) {
+            return Center(
+                child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Container(
+                padding: EdgeInsetsDirectional.symmetric(horizontal: 4.0),
+              ),
+            ));
+          }
+
           return Center(
               child: Padding(
             padding: const EdgeInsets.all(8.0),

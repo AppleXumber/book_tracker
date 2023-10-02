@@ -8,6 +8,7 @@ class SQLHelper {
     await database.execute(tableSQL);
   }
 
+
   static const String tableSQL = 'CREATE TABLE $_tableName('
       '$_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,'
       '$_title TEXT,'
@@ -22,8 +23,10 @@ class SQLHelper {
       '$_publisher TEXT,'
       '$_publicationDate TEXT,'
       '$_editionPublicationDate TEXT,'
+      '$_language TEXT,'
       '$_isbn10 INTEGER,'
       '$_isbn13 INTEGER,'
+      '$_tags TEXT,'
       '$_type TEXT,'
       '$_howToRead TEXT,'
       '$_goal TEXT,'
@@ -43,10 +46,12 @@ class SQLHelper {
   static const String _endReading = "endReading";
   static const String _synopsis = "synopsis";
   static const String _publisher = "publisher";
+  static const String _language = "language";
   static const String _publicationDate = "publicationDate";
   static const String _editionPublicationDate = "editionPublicationDate";
   static const String _isbn10 = "isbn10";
   static const String _isbn13 = "isbn13";
+  static const String _tags = "tags";
   static const String _type = "type";
   static const String _howToRead = "howToRead";
   static const String _goal = "goal";
@@ -55,6 +60,14 @@ class SQLHelper {
 // id: the id of a item
 // title, description: name and description of your activity
 // created_at: the time that the item was created. It will be automatically handled by SQLite
+
+  static Future<void> addColumn(String name, String type) async {
+    final db = await SQLHelper.db();
+    type.toUpperCase();
+    var count = await db.execute("ALTER TABLE $_tableName ADD COLUMN $name $type");
+    return count;
+
+  }
 
   static Future<sql.Database> db() async {
     return sql.openDatabase(
@@ -122,8 +135,10 @@ class SQLHelper {
     booksMap[_endReading] = book.endReading;
     booksMap[_synopsis] = book.synopsis;
     booksMap[_publisher] = book.publisher;
+    booksMap[_language] = book.language;
     booksMap[_publicationDate] = book.publicationDate;
     booksMap[_editionPublicationDate] = book.editionPublicationDate;
+    booksMap[_tags] = book.tags;
     booksMap[_isbn10] = book.isbn10;
     booksMap[_isbn13] = book.isbn13;
     booksMap[_type] = book.type;
