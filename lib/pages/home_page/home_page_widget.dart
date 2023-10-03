@@ -98,10 +98,10 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                 ),
                 onPressed: () {
                   setState(() {
-                    //SQLHelper.createItem(livro);
-                    //SQLHelper.createItem(livroLido);
-                    //SQLHelper.deleteItem(1);
-                    //SQLHelper.deleteItem(2);
+                    SQLHelper.deleteItem(4);
+                    SQLHelper.deleteItem(5);
+                    SQLHelper.deleteItem(6);
+                    SQLHelper.deleteItem(3);
 
 
                   });
@@ -116,77 +116,77 @@ class _HomePageWidgetState extends State<HomePageWidget> {
           top: true,
           child: Align(
             alignment: AlignmentDirectional(0.00, -1.00),
-            child: SingleChildScrollView(
-              child: FutureBuilder<List<Map<String, dynamic>>>(
-                future: SQLHelper.getItems(),
-                builder: (context, snapshot) {
-                  List<Map<String, dynamic>>? itens = snapshot.data;
-                  switch (snapshot.connectionState) {
-                    case ConnectionState.none:
-                      return const Center(
-                        child: Column(
-                          children: [
-                            CircularProgressIndicator(),
-                            Text('Carregando...')
-                          ],
-                        ),
-                      );
-                    case ConnectionState.waiting:
-                      return const Center(
-                        child: Column(
-                          children: [
-                            CircularProgressIndicator(),
-                            Text('Carregando...')
-                          ],
-                        ),
-                      );
-                    case ConnectionState.active:
-                      return const Center(
-                        child: Column(
-                          children: [
-                            CircularProgressIndicator(),
-                            Text('Carregando...')
-                          ],
-                        ),
-                      );
+            child: FutureBuilder<List<Map<String, dynamic>>>(
+              future: SQLHelper.getItems(),
+              builder: (context, snapshot) {
+                List<Map<String, dynamic>>? itens = snapshot.data;
+                switch (snapshot.connectionState) {
+                  case ConnectionState.none:
+                    return const Center(
+                      child: Column(
+                        children: [
+                          CircularProgressIndicator(),
+                          Text('Carregando...')
+                        ],
+                      ),
+                    );
+                  case ConnectionState.waiting:
+                    return const Center(
+                      child: Column(
+                        children: [
+                          CircularProgressIndicator(),
+                          Text('Carregando...')
+                        ],
+                      ),
+                    );
+                  case ConnectionState.active:
+                    return const Center(
+                      child: Column(
+                        children: [
+                          CircularProgressIndicator(),
+                          Text('Carregando...')
+                        ],
+                      ),
+                    );
 
-                    case ConnectionState.done:
-                      if (snapshot.hasData && itens != null) {
-                        if (itens.isNotEmpty) {
-                          return ListView.builder(
-                            scrollDirection: Axis.vertical,
-                            shrinkWrap: true,
-                            itemCount: itens.length,
-                            itemBuilder: (BuildContext context, int index) {
-                              final Book bookBuilder =
-                                  Book.fromJson(itens[index]);
-                              return BookSummary(bookBuilder);
-                            },
-                          );
-                        }
-                        return const Center(
-                          child: Column(
-                            children: [
-                              Icon(Icons.error_outline, size: 128),
-                              Text(
-                                "Não há nenhum livro",
-                                style: TextStyle(fontSize: 32),
-                              )
-                            ],
-                          ),
+                  case ConnectionState.done:
+                    if (snapshot.hasData && itens != null) {
+                      if (itens.isNotEmpty) {
+                        return ListView.builder(
+                          primary: true,
+                          scrollDirection: Axis.vertical,
+                          shrinkWrap: true,
+                          itemCount: itens.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            final Book bookBuilder =
+                                Book.fromJson(itens[index]);
+                            print(index);
+                            return BookSummary(bookBuilder);
+                          },
                         );
                       }
-                      return Column(
-                        children: [
-                          Text("Erro, não foi possível encontrar os livros"),
-                          BookSummary(livroLido),
-                          BookSummary(livro),
-                        ],
+                      return const Center(
+                        child: Column(
+                          children: [
+                            Icon(Icons.error_outline, size: 128),
+                            Text(
+                              "Não há nenhum livro",
+                              style: TextStyle(fontSize: 32),
+                            )
+                          ],
+                        ),
                       );
-                      break;
-                  }
-                },
-              ),
+                    }
+                    return Column(
+                      children: [
+                        Text("Erro, não foi possível encontrar os livros"),
+                        BookSummary(livroLido),
+                        BookSummary(livro),
+                      ],
+                    );
+                    break;
+                }
+              },
             ),
           ),
         ),

@@ -36,6 +36,14 @@ class _FormBooksWidgetState extends State<FormBooksWidget> {
     }
   }
 
+  validateType(type) {
+    if(type == "Físico" || type == null || type == "") {
+      return "Fisico";
+    } else if(type == "Digital") {
+      return "Digital";
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -66,12 +74,14 @@ class _FormBooksWidgetState extends State<FormBooksWidget> {
     context.watch<FFAppState>();
     Map<String, dynamic> bookMap = jsonDecode(widget.bookJson);
     Book book = Book.fromJson(bookMap);
+    bool edit = true;
 
     _model.titleFieldController.text = showData(book.title);
     _model.authorFieldController.text = showData(book.author);
     _model.pagesFieldController.text = showData(book.pages);
     if (book.pages < 0) {
       _model.pagesFieldController.text = "";
+      edit = false;
     }
     _model.chapFieldController.text = showData(book.chapters);
     _model.descFieldController.text = showData(book.synopsis);
@@ -693,13 +703,7 @@ class _FormBooksWidgetState extends State<FormBooksWidget> {
                                               )
                                             ].toList(),
                                             onChanged: (val) => setState(() {}),
-                                            controller: _model
-                                                    .typeRadioValueController ??=
-                                                FormFieldController<String>(
-                                                    FFLocalizations.of(context)
-                                                        .getText(
-                                              '6qn1nhzb' /* Fisico */,
-                                            )),
+                                            controller: _model.typeRadioValueController ??= FormFieldController<String>(validateType(showData(book.type))),
                                             optionHeight: 32.0,
                                             textStyle:
                                                 FlutterFlowTheme.of(context)
@@ -1287,8 +1291,6 @@ class _FormBooksWidgetState extends State<FormBooksWidget> {
                                   String goal =
                                       _model.trackerGoalController.text;
                                   String tags = showData(_model.tagFieldController.text);
-
-
                                   String publisher =
                                       _model.publisherFieldController.text;
                                   String isbn10 =
@@ -1300,14 +1302,25 @@ class _FormBooksWidgetState extends State<FormBooksWidget> {
                                   String lang = _model.langFieldController.text;
                                   String publicationDate =
                                       _model.dateFieldController.text;
+                                  String type = _model.typeRadioValueController.toString();
 
-                                  Book book = Book(
+                                  if(type.contains("Digital")) {
+                                    type = "Digital";
+                                  } else if(type.contains("Fisico")) {
+                                    type = "Físico";
+                                  } else {
+                                    type = "Físico";
+                                  }
+
+                                  Book bookSave = Book(
                                     id: 0,
                                     title: title,
                                     author: author,
                                     pages: int.tryParse(pages) ?? 0,
                                     chapters: int.tryParse(chapters) ?? 0,
                                     synopsis: synopsis,
+                                    type: type,
+                                    howToRead: "toRead",
                                     startReading: DateFormat("dd/MM/yyyy")
                                         .format(DateTime.now()),
                                     endReading: DateFormat("dd/MM/yyyy").format(
@@ -1315,10 +1328,7 @@ class _FormBooksWidgetState extends State<FormBooksWidget> {
                                     goal: goal,
                                     image:
                                         "https://www.lojadobolseiro.com.br/uploads/images/2020/02/76-livro-o-hobbit-capa-smaug-j-r-r-tolkien-1582738560.jpg",
-                                    tags: tags
-                                        .split(',')
-                                        .map((tag) => tag.trim())
-                                        .toList(),
+                                    tags: tags.replaceAll(", ", '-'),
                                     publisher: publisher,
                                     isbn10: int.tryParse(isbn10),
                                     isbn13: int.tryParse(isbn13),
@@ -1327,8 +1337,13 @@ class _FormBooksWidgetState extends State<FormBooksWidget> {
                                     publicationDate: publicationDate,
                                   );
                                   setState(() {
-                                    SQLHelper.createItem(book);
+                                    if (edit) {
+                                      SQLHelper.updateItem(book.id, bookSave);
+                                    } else {
+                                      SQLHelper.createItem(bookSave);
+                                    }
                                     context.safePop();
+
                                   });
                                 },
                                 text: FFLocalizations.of(context).getText(

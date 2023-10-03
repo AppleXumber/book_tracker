@@ -1,4 +1,6 @@
 import "dart:math";
+import 'package:book_tracker/database/sql_helper.dart';
+
 import '/flutter_flow/flutter_flow_expanded_image_view.dart';
 import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
@@ -97,6 +99,48 @@ class _BookInfoWidgetState extends State<BookInfoWidget> {
               borderWidth: 1.0,
               buttonSize: 60.0,
               icon: Icon(
+                Icons.delete_forever,
+                color: FlutterFlowTheme.of(context).primaryBackground,
+                size: 24.0,
+              ),
+              onPressed: () async {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: const Row(
+                        children: [
+                          Text("Deletar", style: TextStyle(color: Colors.red)),
+                          Icon(Icons.delete_forever, color: Colors.red),
+                        ],
+                      ),
+                      content: const Text("Gostaria de deletar o livro?"),
+                      actions: <Widget>[
+                        TextButton(
+                          child: const Text("Não"),
+                          onPressed: () {
+                            context.safePop();
+                          },
+                        ),
+                        TextButton(
+                          child: const Text("Sim"),
+                          onPressed: () {
+                            SQLHelper.deleteItem(widget.book.id);
+                            context.safePop();
+                            context.safePop();
+                          },
+                        ),
+                      ],
+                    );
+                  },
+                );
+              },
+            ),
+            FlutterFlowIconButton(
+              borderRadius: 20.0,
+              borderWidth: 1.0,
+              buttonSize: 60.0,
+              icon: Icon(
                 Icons.mode_edit,
                 color: FlutterFlowTheme.of(context).primaryBackground,
                 size: 24.0,
@@ -105,9 +149,12 @@ class _BookInfoWidgetState extends State<BookInfoWidget> {
                 context.pushNamed('form_books', queryParameters: {
                   "bookJson": serializeParam(
                       jsonEncode(widget.book.toJson()), ParamType.JSON)
-                });
+                }).then((value) => setState(() {
+                      print("Recarregando tela");
+                    }));
               },
             ),
+
           ],
           centerTitle: false,
           elevation: 2.0,
@@ -214,13 +261,6 @@ class _BookInfoWidgetState extends State<BookInfoWidget> {
                                         onPressed: () {
                                           setState(() {
                                             print('IconButton pressed ...');
-                                            print(widget.book.language);
-                                            widget.book.tags = [
-                                              "Ficção",
-                                              "Distopia"
-                                            ];
-                                            print(widget.book.tags);
-                                            print(widget.book.type);
                                           });
                                         },
                                       ),
@@ -524,7 +564,7 @@ class _BookInfoWidgetState extends State<BookInfoWidget> {
                                 ),
                           ),
                           SelectionArea(
-                            child: textSynopsis(
+                            child: TextSynopsis(
                                 text: showData(widget.book.synopsis),
                                 maxLines: 3),
                           ),
@@ -826,7 +866,8 @@ class _BookInfoWidgetState extends State<BookInfoWidget> {
                                 width: 500.0,
                                 height: 35.0,
                                 child: SelectionArea(
-                                    child: TagsList(tags: widget.book.tags)),
+                                    child:
+                                        TagsList(tagsString: widget.book.tags)),
                               ),
                             ),
                           ],
@@ -906,11 +947,11 @@ class _BookInfoWidgetState extends State<BookInfoWidget> {
 
 class TagsList extends StatelessWidget {
   TagsList({
-    this.tags,
+    this.tagsString,
     super.key,
   });
 
-  final List<String>? tags;
+  String? tagsString;
 
   int calculateValueFromWord(String word) {
     int value = 0;
@@ -924,7 +965,7 @@ class TagsList extends StatelessWidget {
   }
 
   Color calculateWordColor(String word) {
-    int wordValue = calculateValueFromWord(word ?? '');
+    int wordValue = calculateValueFromWord(word);
     String piString = pi.toString();
     String eString = e.toString();
     int randomPi = int.parse(piString.substring(word.length, word.length + 1));
@@ -949,6 +990,7 @@ class TagsList extends StatelessWidget {
   }
 
   Widget build(BuildContext context) {
+    List<String>? tags = tagsString?.split("-");
     return ListView.builder(
         shrinkWrap: true,
         scrollDirection: Axis.horizontal,
@@ -971,7 +1013,7 @@ class TagsList extends StatelessWidget {
             child: Container(
               padding: EdgeInsetsDirectional.symmetric(horizontal: 4.0),
               child: Text(
-                tagText!,
+                tagText,
                 style: TextStyle(
                     color: determineTextColor(calculateWordColor(tagText))),
               ),
@@ -982,8 +1024,8 @@ class TagsList extends StatelessWidget {
   }
 }
 
-class textSynopsis extends StatefulWidget {
-  const textSynopsis({
+class TextSynopsis extends StatefulWidget {
+  const TextSynopsis({
     required this.maxLines,
     super.key,
     required this.text,
@@ -993,10 +1035,10 @@ class textSynopsis extends StatefulWidget {
   final int maxLines;
 
   @override
-  State<textSynopsis> createState() => _TextSynopsisState();
+  State<TextSynopsis> createState() => _TextSynopsisState();
 }
 
-class _TextSynopsisState extends State<textSynopsis> {
+class _TextSynopsisState extends State<TextSynopsis> {
   bool _isExpanded = false;
 
   @override

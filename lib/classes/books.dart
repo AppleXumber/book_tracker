@@ -22,7 +22,7 @@ class Book {
   int? isbn10;
   int? isbn13;
   String? type = "físico";
-  List<String>? tags = [];
+  String? tags;
 
   String? howToRead = "pages";
   String? goal;
@@ -130,7 +130,7 @@ class Book {
       isbn10: json['isbn10'],
       isbn13: json['isbn13'],
       type: json['type'],
-      tags: json['tags'] != null ? List<String>.from(json['tags']) : null,
+      tags: json['tags'],
       howToRead: json['howToRead'],
       goal: json['goal'],
       status: json['status'],
@@ -155,7 +155,7 @@ Book livro = Book(
     startReading: DateFormat("dd/MM/yyyy").format(DateTime.now()),
     status: "reading",
     progress: 168,
-    tags: ["Romance", "Fantasia", "Épico", "Medieval"],
+    tags: "Romance-Fantasia-Épico-Medieval",
     type: "físico",
     language: "Português",
     editionPublicationDate: "15/07/2019");
@@ -176,7 +176,7 @@ Book livroLido = Book(
   startReading: DateFormat("dd/MM/yyyy").format(DateTime.now()),
   status: "toRead",
   progress: 0,
-  tags: ["Romance"],
+  tags: "Romance",
 );
 
 Book emptyBook = Book(id: -1, title: "", author: "", pages: -1);

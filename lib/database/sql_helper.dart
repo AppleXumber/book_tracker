@@ -83,8 +83,7 @@ class SQLHelper {
   static Future<int> createItem(Book book) async {
     final db = await SQLHelper.db();
     final data = toMap(book);
-    final id = await db.insert('$_tableName', data,
-        conflictAlgorithm: sql.ConflictAlgorithm.replace);
+    final id = await db.insert('$_tableName', data, conflictAlgorithm: sql.ConflictAlgorithm.replace);
     return id;
   }
 
@@ -126,7 +125,6 @@ class SQLHelper {
     final Map<String, dynamic> booksMap = Map();
     booksMap[_title] = book.title;
     booksMap[_image] = book.image;
-    booksMap[_id] = book.id;
     booksMap[_author] = book.author;
     booksMap[_progress] = book.progress;
     booksMap[_pages] = book.pages;
