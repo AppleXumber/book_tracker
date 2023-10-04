@@ -44,6 +44,14 @@ class _FormBooksWidgetState extends State<FormBooksWidget> {
     }
   }
 
+  validateTracker(tracker) {
+    if (tracker == "Páginas" || tracker == null || tracker == "") {
+      return "Páginas";
+    } else if (tracker == "Capitulos") {
+      return "Capitulos";
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -140,6 +148,8 @@ class _FormBooksWidgetState extends State<FormBooksWidget> {
                 ),
                 onPressed: () {
                   print('IconButton pressed ...');
+
+
                 },
               ),
             ),
@@ -486,18 +496,15 @@ class _FormBooksWidgetState extends State<FormBooksWidget> {
                             child: FlutterFlowRadioButton(
                               options: [
                                 FFLocalizations.of(context).getText(
-                                  'lsczorag' /* Capitulos */,
+                                  'qfydc60s' /* Páginas */,
                                 ),
                                 FFLocalizations.of(context).getText(
-                                  'qfydc60s' /* Páginas */,
-                                )
+                                  'lsczorag' /* Capitulos */,
+                                ),
                               ].toList(),
                               onChanged: (val) => setState(() {}),
                               controller: _model.trackerRadioValueController ??=
-                                  FormFieldController<String>(
-                                      FFLocalizations.of(context).getText(
-                                'i3onjv5s' /* Capitulos */,
-                              )),
+                                  FormFieldController<String>(validateTracker(showData(book.howToRead))),
                               optionHeight: 32.0,
                               textStyle:
                                   FlutterFlowTheme.of(context).labelMedium,
@@ -1308,6 +1315,15 @@ class _FormBooksWidgetState extends State<FormBooksWidget> {
                                       _model.dateFieldController.text;
                                   String type = _model.typeRadioValueController
                                       .toString();
+                                  String howToRead = _model.trackerRadioValueController.toString();
+
+                                  if (howToRead.contains("Capitulos")) {
+                                    howToRead = "Capitulos";
+                                  } else if (howToRead.contains("Páginas")) {
+                                    howToRead = "Páginas";
+                                  } else {
+                                    howToRead = "Páginas";
+                                  }
 
                                   if (type.contains("Digital")) {
                                     type = "Digital";
@@ -1325,6 +1341,7 @@ class _FormBooksWidgetState extends State<FormBooksWidget> {
                                     chapters: int.tryParse(chapters) ?? 0,
                                     synopsis: synopsis,
                                     type: type,
+                                    howToRead: howToRead,
                                     startReading: DateFormat("dd/MM/yyyy")
                                         .format(DateTime.now()),
                                     endReading: DateFormat("dd/MM/yyyy").format(
@@ -1339,12 +1356,15 @@ class _FormBooksWidgetState extends State<FormBooksWidget> {
                                     editionPublicationDate: edition,
                                     language: lang,
                                     publicationDate: publicationDate,
+                                    status: "toRead",
                                   );
                                   setState(() {
                                     if (edit) {
+                                      if(book.status != null) {
+                                        bookSave.status = book.status;
+                                      }
                                       SQLHelper.updateItem(book.id, bookSave);
                                     } else {
-                                      bookSave.status = "toRead";
                                       SQLHelper.createItem(bookSave);
                                     }
                                     context.safePop();

@@ -261,21 +261,22 @@ class _BookInfoWidgetState extends State<BookInfoWidget> {
                                         onPressed: () {
                                           setState(() {
                                             print('IconButton pressed ...');
-                                            print(widget.book.id);
-                                            print(widget.book.title);
-                                            print(widget.book.author);
-                                            print(widget.book.pages);
-                                            print(widget.book.chapters);
-                                            print(widget.book.startReading);
-                                            print(widget.book.endReading);
-                                            print(widget.book.progress);
-                                            print(widget.book.howToRead);
-                                            print(widget.book.language);
-                                            print(widget.book.editionPublicationDate);
-                                            print(widget.book.goal);
-                                            print(widget.book.publicationDate);
+                                            print("id: ${widget.book.id}");
+                                            print("title: ${widget.book.title}");
+                                            print("author: ${widget.book.author}");
+                                            print("pages: ${widget.book.pages}");
+                                            print("chapters: ${widget.book.chapters}");
+                                            print("startReading: ${widget.book.startReading}");
+                                            print("endReading: ${widget.book.endReading}");
+                                            print("progress: ${widget.book.progress}");
+                                            print("How to Read: ${widget.book.howToRead}");
+                                            print("language: ${widget.book.language}");
+                                            print("editionPublicationDate: ${widget.book.editionPublicationDate}");
+                                            print("goal: ${widget.book.goal}");
+                                            print("publicationDate: ${widget.book.publicationDate}");
                                             print("Status: ${widget.book.status}");
-                                            print(widget.book.tags);
+                                            print("Tags: ${widget.book.tags}");
+                                            print("Type: ${widget.book.type}");
                                           });
                                         },
                                       ),
