@@ -142,6 +142,7 @@ class SQLHelper {
     booksMap[_type] = book.type;
     booksMap[_howToRead] = book.howToRead;
     booksMap[_goal] = book.goal;
+    booksMap[_status] = book.status;
 
     print("Mapa de tarefas: $booksMap");
     return booksMap;

@@ -97,14 +97,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                   size: 24.0,
                 ),
                 onPressed: () {
-                  setState(() {
-                    SQLHelper.deleteItem(4);
-                    SQLHelper.deleteItem(5);
-                    SQLHelper.deleteItem(6);
-                    SQLHelper.deleteItem(3);
-
-
-                  });
+                  setState(() {});
                 },
               ),
             ),
@@ -154,6 +147,9 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                       if (itens.isNotEmpty) {
                         return ListView.builder(
                           primary: true,
+                          padding: EdgeInsets.only(
+                            bottom: 100,
+                          ),
                           scrollDirection: Axis.vertical,
                           shrinkWrap: true,
                           itemCount: itens.length,

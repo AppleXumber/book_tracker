@@ -261,6 +261,21 @@ class _BookInfoWidgetState extends State<BookInfoWidget> {
                                         onPressed: () {
                                           setState(() {
                                             print('IconButton pressed ...');
+                                            print(widget.book.id);
+                                            print(widget.book.title);
+                                            print(widget.book.author);
+                                            print(widget.book.pages);
+                                            print(widget.book.chapters);
+                                            print(widget.book.startReading);
+                                            print(widget.book.endReading);
+                                            print(widget.book.progress);
+                                            print(widget.book.howToRead);
+                                            print(widget.book.language);
+                                            print(widget.book.editionPublicationDate);
+                                            print(widget.book.goal);
+                                            print(widget.book.publicationDate);
+                                            print("Status: ${widget.book.status}");
+                                            print(widget.book.tags);
                                           });
                                         },
                                       ),
@@ -997,7 +1012,7 @@ class TagsList extends StatelessWidget {
         itemCount: tags?.length,
         itemBuilder: (BuildContext context, int index) {
           String? tagText = tags?[index];
-          if (tagText == null) {
+          if (tagText == null || tagText == "") {
             return Center(
                 child: Padding(
               padding: const EdgeInsets.all(8.0),

@@ -21,7 +21,7 @@ class Book {
   String? language;
   int? isbn10;
   int? isbn13;
-  String? type = "físico";
+  String? type;
   String? tags;
 
   String? howToRead = "pages";

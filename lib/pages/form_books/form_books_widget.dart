@@ -30,16 +30,16 @@ class _FormBooksWidgetState extends State<FormBooksWidget> {
 
   showData(data) {
     if (data != null) {
-      return "${data}";
+      return "$data";
     } else if (data == null) {
       return "";
     }
   }
 
   validateType(type) {
-    if(type == "Físico" || type == null || type == "") {
+    if (type == "Físico" || type == null || type == "") {
       return "Fisico";
-    } else if(type == "Digital") {
+    } else if (type == "Digital") {
       return "Digital";
     }
   }
@@ -703,7 +703,11 @@ class _FormBooksWidgetState extends State<FormBooksWidget> {
                                               )
                                             ].toList(),
                                             onChanged: (val) => setState(() {}),
-                                            controller: _model.typeRadioValueController ??= FormFieldController<String>(validateType(showData(book.type))),
+                                            controller: _model
+                                                    .typeRadioValueController ??=
+                                                FormFieldController<String>(
+                                                    validateType(
+                                                        showData(book.type))),
                                             optionHeight: 32.0,
                                             textStyle:
                                                 FlutterFlowTheme.of(context)
@@ -1290,7 +1294,7 @@ class _FormBooksWidgetState extends State<FormBooksWidget> {
                                       _model.descFieldController.text;
                                   String goal =
                                       _model.trackerGoalController.text;
-                                  String tags = showData(_model.tagFieldController.text);
+                                  String tags = _model.tagFieldController.text;
                                   String publisher =
                                       _model.publisherFieldController.text;
                                   String isbn10 =
@@ -1302,11 +1306,12 @@ class _FormBooksWidgetState extends State<FormBooksWidget> {
                                   String lang = _model.langFieldController.text;
                                   String publicationDate =
                                       _model.dateFieldController.text;
-                                  String type = _model.typeRadioValueController.toString();
+                                  String type = _model.typeRadioValueController
+                                      .toString();
 
-                                  if(type.contains("Digital")) {
+                                  if (type.contains("Digital")) {
                                     type = "Digital";
-                                  } else if(type.contains("Fisico")) {
+                                  } else if (type.contains("Fisico")) {
                                     type = "Físico";
                                   } else {
                                     type = "Físico";
@@ -1320,7 +1325,6 @@ class _FormBooksWidgetState extends State<FormBooksWidget> {
                                     chapters: int.tryParse(chapters) ?? 0,
                                     synopsis: synopsis,
                                     type: type,
-                                    howToRead: "toRead",
                                     startReading: DateFormat("dd/MM/yyyy")
                                         .format(DateTime.now()),
                                     endReading: DateFormat("dd/MM/yyyy").format(
@@ -1340,10 +1344,10 @@ class _FormBooksWidgetState extends State<FormBooksWidget> {
                                     if (edit) {
                                       SQLHelper.updateItem(book.id, bookSave);
                                     } else {
+                                      bookSave.status = "toRead";
                                       SQLHelper.createItem(bookSave);
                                     }
                                     context.safePop();
-
                                   });
                                 },
                                 text: FFLocalizations.of(context).getText(
