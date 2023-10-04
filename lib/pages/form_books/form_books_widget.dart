@@ -29,7 +29,6 @@ class _FormBooksWidgetState extends State<FormBooksWidget> {
 
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
-
   validateType(type) {
     if (type == "Físico" || type == null || type == "") {
       return "Fisico";

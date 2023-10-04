@@ -57,6 +57,11 @@ class _BookSummaryState extends State<BookSummary> {
         ),
         onPressed: () {
           widget.book.addProgress();
+          showModalBottomSheet(
+              context: context,
+              elevation: 5,
+              isScrollControlled: true,
+              builder: (context) => InitalProgress(context: context, book: widget.book));
         },
       );
     } else {
@@ -291,6 +296,76 @@ class _BookSummaryState extends State<BookSummary> {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class InitalProgress extends StatelessWidget {
+  const InitalProgress({
+    super.key,
+    required this.context,
+    required this.book,
+  });
+
+  final Book book;
+  final BuildContext context;
+
+  @override
+  Widget build(BuildContext context) {
+    final TextEditingController _progressController = TextEditingController();
+    final TextEditingController _totalController = TextEditingController();
+    var progressAdded = int.tryParse(showData(book.progress));
+    _progressController.text = book.progress.toString();
+    _totalController.text = book.pages.toString();
+    return Container(
+      padding: EdgeInsets.only(
+        top: 15,
+        left: 15,
+        right: 15,
+        // this will prevent the soft keyboard from covering the text fields
+        bottom: MediaQuery.of(context).viewInsets.bottom + 120,
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Text("Inicar o livro: ${book.title}", ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Expanded(
+                child: TextField(
+                  controller: _progressController,
+                  decoration: const InputDecoration(hintText: 'Paginas lidas'),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: const Text("/", style: TextStyle(fontSize: 24)),
+              ),
+              Expanded(
+                child: TextField(
+                  controller: _totalController,
+                  decoration: const InputDecoration(hintText: 'Paginas totais'),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              _progressController.text = '';
+              _totalController.text = '';
+
+              // Close the bottom sheet
+              Navigator.of(context).pop();
+            },
+            child: Text('Create New'),
+          )
+        ],
       ),
     );
   }
