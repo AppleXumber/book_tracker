@@ -115,32 +115,11 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                 List<Map<String, dynamic>>? itens = snapshot.data;
                 switch (snapshot.connectionState) {
                   case ConnectionState.none:
-                    return const Center(
-                      child: Column(
-                        children: [
-                          CircularProgressIndicator(),
-                          Text('Carregando...')
-                        ],
-                      ),
-                    );
+                    return LoadingWidget();
                   case ConnectionState.waiting:
-                    return const Center(
-                      child: Column(
-                        children: [
-                          CircularProgressIndicator(),
-                          Text('Carregando...')
-                        ],
-                      ),
-                    );
+                    return LoadingWidget();
                   case ConnectionState.active:
-                    return const Center(
-                      child: Column(
-                        children: [
-                          CircularProgressIndicator(),
-                          Text('Carregando...')
-                        ],
-                      ),
-                    );
+                    return LoadingWidget();
 
                   case ConnectionState.done:
                     if (snapshot.hasData && itens != null) {
@@ -186,6 +165,24 @@ class _HomePageWidgetState extends State<HomePageWidget> {
             ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+class LoadingWidget extends StatelessWidget {
+  const LoadingWidget({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return const Center(
+      child: Column(
+        children: [
+          CircularProgressIndicator(),
+          Text('Carregando...')
+        ],
       ),
     );
   }
