@@ -1,6 +1,7 @@
 import 'package:book_tracker/pages/book_info/book_info_widget.dart';
 
 import '../classes/books.dart';
+import '../../classes/show_data.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import 'package:flutter/material.dart';
@@ -22,13 +23,6 @@ class BookSummary extends StatefulWidget {
 class _BookSummaryState extends State<BookSummary> {
   late BookSummaryModel _model;
 
-  showData(data) {
-    if (data != null) {
-      return "${data}";
-    } else if (data == null) {
-      return "";
-    }
-  }
 
   @override
   void setState(VoidCallback callback) {

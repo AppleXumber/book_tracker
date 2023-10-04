@@ -1,6 +1,7 @@
 import 'package:book_tracker/database/sql_helper.dart';
 
 import '../../classes/books.dart';
+import '../../classes/show_data.dart';
 import '/flutter_flow/flutter_flow_drop_down.dart';
 import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_radio_button.dart';
@@ -28,13 +29,6 @@ class _FormBooksWidgetState extends State<FormBooksWidget> {
 
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
-  showData(data) {
-    if (data != null) {
-      return "$data";
-    } else if (data == null) {
-      return "";
-    }
-  }
 
   validateType(type) {
     if (type == "Físico" || type == null || type == "") {

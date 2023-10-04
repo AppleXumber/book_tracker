@@ -14,6 +14,7 @@ import 'package:provider/provider.dart';
 import 'book_info_model.dart';
 export 'book_info_model.dart';
 import 'package:book_tracker/classes/books.dart';
+import '../../classes/show_data.dart';
 
 class BookInfoWidget extends StatefulWidget {
   BookInfoWidget({
@@ -29,14 +30,6 @@ class BookInfoWidget extends StatefulWidget {
 
 class _BookInfoWidgetState extends State<BookInfoWidget> {
   late BookInfoModel _model;
-
-  showData(data) {
-    if (data != null) {
-      return "${data}";
-    } else if (data == null) {
-      return "";
-    }
-  }
 
   returnTags(tags) {
     tags.forEach((int tag) => print(tag));
