@@ -41,7 +41,14 @@ class _BookSummaryState extends State<BookSummary> {
                 fontSize: 18.0,
               ),
         ),
-        onPressed: () {},
+        onPressed: () {
+          showModalBottomSheet(
+              context: context,
+              elevation: 5,
+              isScrollControlled: true,
+              builder: (context) =>
+                  InitalProgress(context: context, book: widget.book));
+        },
       );
     } else if (widget.book.status == "toRead") {
       return TextButton(
@@ -62,8 +69,47 @@ class _BookSummaryState extends State<BookSummary> {
                   InitalProgress(context: context, book: widget.book));
         },
       );
-    } else {
-      return;
+    } else if (widget.book.status == "read") {
+      return TextButton(
+        child: Text(
+          "Reiniciar",
+          style: FlutterFlowTheme.of(context).bodyMedium.override(
+                fontFamily: 'Readex Pro',
+                color: Colors.white,
+                fontSize: 18.0,
+              ),
+        ),
+        onPressed: () {
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: const Row(
+                  children: [Text("Reiniciar"), Icon(Icons.restore_outlined)],
+                ),
+                content: const Text("Gostaria de deletar a leitura?"),
+                actions: <Widget>[
+                  TextButton(
+                    child: const Text("Não"),
+                    onPressed: () {
+                      context.safePop();
+                    },
+                  ),
+                  TextButton(
+                    child: const Text("Sim"),
+                    onPressed: () {
+                      widget.book.status = "toRead";
+                      widget.book.progress = 0;
+                      SQLHelper.updateItem(widget.book.id, widget.book);
+                      context.safePop();
+                    },
+                  ),
+                ],
+              );
+            },
+          );
+        },
+      );
     }
   }
 
@@ -374,12 +420,18 @@ class _FormProgressState extends State<FormProgress> {
                 controller: widget._progressController,
                 decoration: const InputDecoration(hintText: 'Paginas lidas'),
                 keyboardType: TextInputType.number,
+                autofocus: true,
+                onTapOutside: (value) {
+                  return;
+                },
                 onChanged: (value) {
                   setState(() {
+                    _FormProgressState();
                     if (int.parse(widget._progressController.text) >
-                        int.parse(widget._totalController.text)) {widget._progressController.text = widget._totalController.text;
+                        int.parse(widget._totalController.text)) {
+                      widget._progressController.text =
+                          widget._totalController.text;
                     }
-
                     if (percentage > 1) {
                       percentage = 1;
                     }
@@ -399,7 +451,9 @@ class _FormProgressState extends State<FormProgress> {
                 onChanged: (value) {
                   setState(() {
                     if (int.parse(widget._progressController.text) >
-                        int.parse(widget._totalController.text)) {widget._progressController.text = widget._totalController.text;
+                        int.parse(widget._totalController.text)) {
+                      widget._progressController.text =
+                          widget._totalController.text;
                     }
 
                     if (percentage > 1) {
@@ -415,14 +469,14 @@ class _FormProgressState extends State<FormProgress> {
           padding: const EdgeInsets.symmetric(vertical: 10.0),
           child: LinearPercentIndicator(
             percent: percentage,
-            width: MediaQuery.sizeOf(context).width * 0.95,
+            width: MediaQuery.sizeOf(context).width * 0.90,
             lineHeight: 22.0,
             animation: true,
             progressColor: FlutterFlowTheme.of(context).primary,
             backgroundColor: FlutterFlowTheme.of(context).accent4,
             center: Padding(
               padding: EdgeInsetsDirectional.fromSTEB(
-                  0.0, 0.0, MediaQuery.sizeOf(context).width * 0.85, 0.0),
+                  0.0, 0.0, MediaQuery.sizeOf(context).width * 0.75, 0.0),
               child: Text(
                 "${((int.parse(widget._progressController.text) / int.parse(widget._totalController.text)) * 100).floor()}%",
                 textAlign: TextAlign.start,
@@ -441,13 +495,23 @@ class _FormProgressState extends State<FormProgress> {
           child: FFButtonWidget(
             onPressed: () async {
               int addProgress = (int.parse(widget._progressController.text));
+              if (widget.book.status == "toRead" && widget.book.progress == 0) {
+                widget.book.status = "reading";
+              }
+
               widget.book.progress = addProgress;
 
-              print("Progresso do livro ${widget.book.title} : ${widget.book.progress}");
+              if (widget.book.progress! >= widget.book.pages) {
+                widget.book.status = "read";
+              }
+
+              print(
+                  "Progresso do livro ${widget.book.title} : ${widget.book.progress}");
 
               SQLHelper.updateItem(widget.book.id, widget.book);
 
               context.safePop();
+              setState(() {});
             },
             text: "Lançar",
             options: FFButtonOptions(

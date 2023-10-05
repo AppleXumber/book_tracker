@@ -99,9 +99,6 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                 ),
                 onPressed: () {
                   setState(() {});
-                  print("==========");
-                  SQLHelper.db();
-                  print("==========");
                 },
               ),
             ),
@@ -146,13 +143,13 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                       }
                       return Center(
                         child: Padding(
-                          padding: EdgeInsets.all(60.0),
+                          padding: EdgeInsets.all(55.0),
                           child: Column(
                             children: [
-                              Icon(Icons.error_outline, size: 100),
+                              Icon(Icons.bookmark_add_outlined, size: 100),
                               Text(
                                 "Não há nenhum livro",
-                                style: TextStyle(fontSize: 32),
+                                style: TextStyle(fontSize: 28),
                               ),
                               Padding(
                                 padding: const EdgeInsets.all(48.0),

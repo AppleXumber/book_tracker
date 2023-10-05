@@ -1358,6 +1358,7 @@ class _FormBooksWidgetState extends State<FormBooksWidget> {
                                     if (edit) {
                                       if(book.status != null) {
                                         bookSave.status = book.status;
+                                        bookSave.progress = book.progress;
                                       }
                                       SQLHelper.updateItem(book.id, bookSave);
                                     } else {
