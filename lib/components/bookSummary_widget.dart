@@ -3,6 +3,7 @@ import 'package:book_tracker/pages/book_info/book_info_widget.dart';
 
 import '../classes/books.dart';
 import '../../classes/show_data.dart';
+import '../flutter_flow/flutter_flow_widgets.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import 'package:flutter/material.dart';
@@ -324,55 +325,148 @@ class InitalProgress extends StatelessWidget {
         // this will prevent the soft keyboard from covering the text fields
         bottom: MediaQuery.of(context).viewInsets.bottom + 120,
       ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Text(
-            "Inicar o livro: ${book.title}",
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Expanded(
-                child: TextField(
-                  controller: _progressController,
-                  decoration: const InputDecoration(hintText: 'Paginas lidas'),
-                ),
+      child: FormProgress(
+          book: book,
+          progressController: _progressController,
+          totalController: _totalController),
+    );
+  }
+}
+
+class FormProgress extends StatefulWidget {
+  FormProgress({
+    super.key,
+    required this.book,
+    required TextEditingController progressController,
+    required TextEditingController totalController,
+  })  : _progressController = progressController,
+        _totalController = totalController;
+
+  final Book book;
+  final TextEditingController _progressController;
+  final TextEditingController _totalController;
+
+  @override
+  State<FormProgress> createState() => _FormProgressState();
+}
+
+class _FormProgressState extends State<FormProgress> {
+  @override
+  Widget build(BuildContext context) {
+    double percentage = int.parse(widget._progressController.text) /
+        int.parse(widget._totalController.text);
+    if (percentage > 1) {
+      percentage = 1;
+      widget._progressController.text = widget._totalController.text;
+    }
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Text(
+          "Inicar o livro: ${widget.book.title}",
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Expanded(
+              child: TextField(
+                controller: widget._progressController,
+                decoration: const InputDecoration(hintText: 'Paginas lidas'),
+                keyboardType: TextInputType.number,
+                onChanged: (value) {
+                  setState(() {
+                    if (int.parse(widget._progressController.text) >
+                        int.parse(widget._totalController.text)) {widget._progressController.text = widget._totalController.text;
+                    }
+
+                    if (percentage > 1) {
+                      percentage = 1;
+                    }
+                  });
+                },
               ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: const Text("/", style: TextStyle(fontSize: 24)),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: const Text("/", style: TextStyle(fontSize: 24)),
+            ),
+            Expanded(
+              child: TextField(
+                controller: widget._totalController,
+                decoration: const InputDecoration(hintText: 'Paginas totais'),
+                keyboardType: TextInputType.number,
+                onChanged: (value) {
+                  setState(() {
+                    if (int.parse(widget._progressController.text) >
+                        int.parse(widget._totalController.text)) {widget._progressController.text = widget._totalController.text;
+                    }
+
+                    if (percentage > 1) {
+                      percentage = 1;
+                    }
+                  });
+                },
               ),
-              Expanded(
-                child: TextField(
-                  controller: _totalController,
-                  decoration: const InputDecoration(hintText: 'Paginas totais'),
-                ),
+            ),
+          ],
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 10.0),
+          child: LinearPercentIndicator(
+            percent: percentage,
+            width: MediaQuery.sizeOf(context).width * 0.95,
+            lineHeight: 22.0,
+            animation: true,
+            progressColor: FlutterFlowTheme.of(context).primary,
+            backgroundColor: FlutterFlowTheme.of(context).accent4,
+            center: Padding(
+              padding: EdgeInsetsDirectional.fromSTEB(
+                  0.0, 0.0, MediaQuery.sizeOf(context).width * 0.85, 0.0),
+              child: Text(
+                "${((int.parse(widget._progressController.text) / int.parse(widget._totalController.text)) * 100).floor()}%",
+                textAlign: TextAlign.start,
+                style: FlutterFlowTheme.of(context).titleSmall,
               ),
-            ],
+            ),
+            barRadius: Radius.circular(10.0),
+            padding: EdgeInsets.zero,
           ),
-          const SizedBox(
-            height: 20,
-          ),
-          ElevatedButton(
-            onPressed: () {
-              var addProgress = (int.parse(_progressController.text));
-              book.progress = book.progress! + addProgress;
+        ),
+        const SizedBox(
+          height: 20,
+        ),
+        Padding(
+          padding: const EdgeInsets.all(28.0),
+          child: FFButtonWidget(
+            onPressed: () async {
+              int addProgress = (int.parse(widget._progressController.text));
+              widget.book.progress = addProgress;
 
-              print("Progresso do livro ${book.title} : ${book.progress}");
+              print("Progresso do livro ${widget.book.title} : ${widget.book.progress}");
 
-              SQLHelper.updateItem(book.id, book);
+              SQLHelper.updateItem(widget.book.id, widget.book);
 
-              _progressController.text = '';
-              _totalController.text = '';
-
-              Navigator.of(context).pop();
+              context.safePop();
             },
-            child: Text('Send Book'),
-          )
-        ],
-      ),
+            text: "Lançar",
+            options: FFButtonOptions(
+              padding: EdgeInsetsDirectional.symmetric(horizontal: 16.0),
+              height: 40.0,
+              color: Color(0xFF10403B),
+              textStyle: FlutterFlowTheme.of(context)
+                  .bodyLarge
+                  .override(fontFamily: 'Readex Pro', color: Colors.white),
+              elevation: 3.0,
+              borderSide: BorderSide(
+                color: Colors.transparent,
+                width: 1.0,
+              ),
+              borderRadius: BorderRadius.circular(8.0),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

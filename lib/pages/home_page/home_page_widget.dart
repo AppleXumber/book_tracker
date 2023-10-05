@@ -1,4 +1,5 @@
 import '../../components/fab_form_book.dart';
+import '../../flutter_flow/flutter_flow_widgets.dart';
 import '/components/drawer_widget.dart';
 import '/components/bookSummary_widget.dart';
 import '/flutter_flow/flutter_flow_icon_button.dart';
@@ -98,6 +99,9 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                 ),
                 onPressed: () {
                   setState(() {});
+                  print("==========");
+                  SQLHelper.db();
+                  print("==========");
                 },
               ),
             ),
@@ -140,15 +144,52 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                           },
                         );
                       }
-                      return const Center(
-                        child: Column(
-                          children: [
-                            Icon(Icons.error_outline, size: 128),
-                            Text(
-                              "Não há nenhum livro",
-                              style: TextStyle(fontSize: 32),
-                            )
-                          ],
+                      return Center(
+                        child: Padding(
+                          padding: EdgeInsets.all(60.0),
+                          child: Column(
+                            children: [
+                              Icon(Icons.error_outline, size: 100),
+                              Text(
+                                "Não há nenhum livro",
+                                style: TextStyle(fontSize: 32),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(48.0),
+                                child: FFButtonWidget(
+                                  onPressed: () async {
+                                    context.pushNamed('form_books',
+                                        queryParameters: {
+                                          "bookJson": serializeParam(
+                                              jsonEncode(emptyBook.toJson()),
+                                              ParamType.JSON)
+                                        });
+                                  },
+                                  text: "Adicionar livro",
+                                  options: FFButtonOptions(
+                                    height: 40.0,
+                                    padding: EdgeInsetsDirectional.fromSTEB(
+                                        24.0, 0.0, 24.0, 0.0),
+                                    iconPadding: EdgeInsetsDirectional.fromSTEB(
+                                        0.0, 0.0, 0.0, 0.0),
+                                    color: Color(0xFF10403B),
+                                    textStyle: FlutterFlowTheme.of(context)
+                                        .titleSmall
+                                        .override(
+                                          fontFamily: 'Readex Pro',
+                                          color: Colors.white,
+                                        ),
+                                    elevation: 3.0,
+                                    borderSide: BorderSide(
+                                      color: Colors.transparent,
+                                      width: 1.0,
+                                    ),
+                                    borderRadius: BorderRadius.circular(8.0),
+                                  ),
+                                ),
+                              )
+                            ],
+                          ),
                         ),
                       );
                     }
@@ -179,10 +220,7 @@ class LoadingWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return const Center(
       child: Column(
-        children: [
-          CircularProgressIndicator(),
-          Text('Carregando...')
-        ],
+        children: [CircularProgressIndicator(), Text('Carregando...')],
       ),
     );
   }

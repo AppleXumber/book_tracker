@@ -8,13 +8,12 @@ class SQLHelper {
     await database.execute(tableSQL);
   }
 
-
   static const String tableSQL = 'CREATE TABLE $_tableName('
       '$_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,'
       '$_title TEXT,'
       '$_author TEXT,'
       '$_image TEXT,'
-      '$_progress REAL,'
+      '$_progress INTEGER,'
       '$_pages INTEGER,'
       '$_chapters INTEGER,'
       '$_startReading TEXT,'
@@ -60,15 +59,6 @@ class SQLHelper {
 // id: the id of a item
 // title, description: name and description of your activity
 // created_at: the time that the item was created. It will be automatically handled by SQLite
-
-  static Future<void> addColumn(String name, String type) async {
-    final db = await SQLHelper.db();
-    type.toUpperCase();
-    var count = await db.execute("ALTER TABLE $_tableName ADD COLUMN $name $type");
-    return count;
-
-  }
-
   static Future<sql.Database> db() async {
     return sql.openDatabase(
       'dbBooks.db',
@@ -79,11 +69,20 @@ class SQLHelper {
     );
   }
 
+  static Future<void> addColumn(String name, String type) async {
+    final db = await SQLHelper.db();
+    type.toUpperCase();
+    var count =
+        await db.execute("ALTER TABLE $_tableName ADD COLUMN $name $type");
+    return count;
+  }
+
   // Create new item (journal)
   static Future<int> createItem(Book book) async {
     final db = await SQLHelper.db();
     final data = toMap(book);
-    final id = await db.insert('$_tableName', data, conflictAlgorithm: sql.ConflictAlgorithm.replace);
+    final id = await db.insert('$_tableName', data,
+        conflictAlgorithm: sql.ConflictAlgorithm.replace);
     return id;
   }
 
