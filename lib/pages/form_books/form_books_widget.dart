@@ -1294,6 +1294,9 @@ class _FormBooksWidgetState extends State<FormBooksWidget> {
                                       _model.descFieldController.text;
                                   String goal =
                                       _model.trackerGoalController.text;
+                                  if (goal.isEmpty) {
+                                    goal = "1";
+                                  }
                                   String tags = _model.tagFieldController.text;
                                   String publisher =
                                       _model.publisherFieldController.text;

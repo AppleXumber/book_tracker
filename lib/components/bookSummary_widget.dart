@@ -1,3 +1,4 @@
+import 'package:book_tracker/database/sql_helper.dart';
 import 'package:book_tracker/pages/book_info/book_info_widget.dart';
 
 import '../classes/books.dart';
@@ -16,13 +17,11 @@ class BookSummary extends StatefulWidget {
   Book book;
 
   @override
-  _BookSummaryState createState() =>
-      _BookSummaryState();
+  _BookSummaryState createState() => _BookSummaryState();
 }
 
 class _BookSummaryState extends State<BookSummary> {
   late BookSummaryModel _model;
-
 
   @override
   void setState(VoidCallback callback) {
@@ -41,9 +40,7 @@ class _BookSummaryState extends State<BookSummary> {
                 fontSize: 18.0,
               ),
         ),
-        onPressed: () {
-          widget.book.addProgress();
-        },
+        onPressed: () {},
       );
     } else if (widget.book.status == "toRead") {
       return TextButton(
@@ -56,12 +53,12 @@ class _BookSummaryState extends State<BookSummary> {
               ),
         ),
         onPressed: () {
-          widget.book.addProgress();
           showModalBottomSheet(
               context: context,
               elevation: 5,
               isScrollControlled: true,
-              builder: (context) => InitalProgress(context: context, book: widget.book));
+              builder: (context) =>
+                  InitalProgress(context: context, book: widget.book));
         },
       );
     } else {
@@ -127,9 +124,8 @@ class _BookSummaryState extends State<BookSummary> {
                     padding:
                         EdgeInsetsDirectional.fromSTEB(10.0, 10.0, 10.0, 10.0),
                     child: ClipRRect(
-                      borderRadius: BorderRadius.circular(10.0),
-                      child: returnImage()
-                    ),
+                        borderRadius: BorderRadius.circular(10.0),
+                        child: returnImage()),
                   ),
                 ),
                 Expanded(
@@ -143,17 +139,17 @@ class _BookSummaryState extends State<BookSummary> {
                       highlightColor: Colors.transparent,
                       onTap: () async {
                         Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => BookInfoWidget(book: widget.book)
-                          )
-                        ).then(
-                              (value) => setState(
-                                () {
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    BookInfoWidget(book: widget.book))).then(
+                          (value) => setState(
+                            () {
                               print('Recarregando tela inicial');
                             },
                           ),
-                        );;
+                        );
+                        ;
                       },
                       child: Column(
                         mainAxisSize: MainAxisSize.max,
@@ -315,8 +311,10 @@ class InitalProgress extends StatelessWidget {
   Widget build(BuildContext context) {
     final TextEditingController _progressController = TextEditingController();
     final TextEditingController _totalController = TextEditingController();
-    var progressAdded = int.tryParse(showData(book.progress));
-    _progressController.text = book.progress.toString();
+    var intProgress = int.tryParse(showData(book.progress));
+    var intGoal = int.tryParse(showData(book.goal));
+    int progressAdded = intProgress! + intGoal!;
+    _progressController.text = progressAdded.toString();
     _totalController.text = book.pages.toString();
     return Container(
       padding: EdgeInsets.only(
@@ -330,7 +328,9 @@ class InitalProgress extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Text("Inicar o livro: ${book.title}", ),
+          Text(
+            "Inicar o livro: ${book.title}",
+          ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -356,14 +356,20 @@ class InitalProgress extends StatelessWidget {
             height: 20,
           ),
           ElevatedButton(
-            onPressed: () async {
+            onPressed: () {
+              var addProgress = (int.parse(_progressController.text));
+              book.progress = book.progress! + addProgress;
+
+              print("Progresso do livro ${book.title} : ${book.progress}");
+
+              SQLHelper.updateItem(book.id, book);
+
               _progressController.text = '';
               _totalController.text = '';
 
-              // Close the bottom sheet
               Navigator.of(context).pop();
             },
-            child: Text('Create New'),
+            child: Text('Send Book'),
           )
         ],
       ),

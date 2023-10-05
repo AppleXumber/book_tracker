@@ -1,3 +1,5 @@
+
+
 import '../flutter_flow/flutter_flow_util.dart';
 
 class Book {
@@ -79,8 +81,8 @@ class Book {
      */
   }
 
-  void addProgress() {
-    print("${this.title} diz: AddProgress");
+  void addProgress(int addProgress) {
+    this.progress = (this.progress! + addProgress);
   }
 
   showSummary() {}
