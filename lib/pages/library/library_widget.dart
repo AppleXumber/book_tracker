@@ -1,4 +1,6 @@
 import 'package:book_tracker/components/fab_form_book.dart';
+import 'package:book_tracker/components/get_itens.dart';
+import 'package:book_tracker/database/sql_helper.dart';
 
 import '../../classes/books.dart';
 import '/components/drawer_widget.dart';
@@ -132,16 +134,7 @@ class _LibraryWidgetState extends State<LibraryWidget> {
                           ),
                         ),
                         collapsed: Container(),
-                        expanded: Column(
-                          mainAxisSize: MainAxisSize.max,
-                          children: [
-                            wrapWithModel(
-                              model: _model.bookSummaryModel,
-                              updateCallback: () => setState(() {}),
-                              child: BookSummary(livroLido),
-                            ),
-                          ],
-                        ),
+                        expanded: GetItensListView(getter: SQLHelper.getStatus("read"), toAdd: false,),
                         theme: ExpandableThemeData(
                           tapHeaderToExpand: true,
                           tapBodyToExpand: false,
@@ -179,7 +172,7 @@ class _LibraryWidgetState extends State<LibraryWidget> {
                         expanded: wrapWithModel(
                           model: _model.bookSummaryModel,
                           updateCallback: () => setState(() {}),
-                          child: BookSummary(livro),
+                          child: GetItensListView(getter: SQLHelper.getStatus("reading"), toAdd: false),
                         ),
                         theme: ExpandableThemeData(
                           tapHeaderToExpand: true,
@@ -218,7 +211,7 @@ class _LibraryWidgetState extends State<LibraryWidget> {
                         expanded: wrapWithModel(
                           model: _model.bookSummaryModel,
                           updateCallback: () => setState(() {}),
-                          child: BookSummary(livroLido),
+                          child: GetItensListView(getter: SQLHelper.getStatus("toRead"), toAdd: false,),
                         ),
                         theme: ExpandableThemeData(
                           tapHeaderToExpand: true,

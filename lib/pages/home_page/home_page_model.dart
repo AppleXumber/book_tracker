@@ -5,12 +5,9 @@ import 'package:flutter/material.dart';
 
 class HomePageModel extends FlutterFlowModel {
   ///  State fields for stateful widgets in this page.
-
   final unfocusNode = FocusNode();
-
   // Model for drawer component.
   late DrawerModel drawerModel;
-
   // Model for reading_in_progress component.
   late BookSummaryModel bookSummaryModel;
 
