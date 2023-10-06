@@ -7,7 +7,6 @@ import '../flutter_flow/flutter_flow_widgets.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:provider/provider.dart';
 import 'bookSummary_model.dart';
@@ -15,7 +14,7 @@ export 'bookSummary_model.dart';
 
 class BookSummary extends StatefulWidget {
   BookSummary(this.book, {Key? key}) : super(key: key);
-  Book book;
+  final Book book;
 
   @override
   _BookSummaryState createState() => _BookSummaryState();
@@ -33,79 +32,44 @@ class _BookSummaryState extends State<BookSummary> {
   returnTextButton() {
     if (widget.book.status == "reading") {
       return TextButton(
-        child: Text(
-          "Lançar",
-          style: FlutterFlowTheme.of(context).bodyMedium.override(
-                fontFamily: 'Readex Pro',
-                color: Colors.white,
-                fontSize: 18.0,
-              ),
-        ),
+        child: TextReadStatusButton(text: "Lançar"),
         onPressed: () {
           showModalBottomSheet(
-              context: context,
-              elevation: 5,
-              isScrollControlled: true,
-              builder: (context) =>
-                  InitalProgress(context: context, book: widget.book));
+                  context: context,
+                  elevation: 5,
+                  isScrollControlled: true,
+                  builder: (context) => InitalProgress(book: widget.book))
+              .then((value) => setState(() {}));
+        },
+        onLongPress: () {
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return ResetAlertDialog(widget: widget);
+            },
+          );
         },
       );
     } else if (widget.book.status == "toRead") {
       return TextButton(
-        child: Text(
-          "Iniciar",
-          style: FlutterFlowTheme.of(context).bodyMedium.override(
-                fontFamily: 'Readex Pro',
-                color: Colors.white,
-                fontSize: 18.0,
-              ),
-        ),
+        child: TextReadStatusButton(text: "Iniciar"),
         onPressed: () {
           showModalBottomSheet(
-              context: context,
-              elevation: 5,
-              isScrollControlled: true,
-              builder: (context) =>
-                  InitalProgress(context: context, book: widget.book));
+                  context: context,
+                  elevation: 5,
+                  isScrollControlled: true,
+                  builder: (context) => InitalProgress(book: widget.book))
+              .then((value) => setState(() {}));
         },
       );
     } else if (widget.book.status == "read") {
       return TextButton(
-        child: Text(
-          "Reiniciar",
-          style: FlutterFlowTheme.of(context).bodyMedium.override(
-                fontFamily: 'Readex Pro',
-                color: Colors.white,
-                fontSize: 18.0,
-              ),
-        ),
+        child: TextReadStatusButton(text: "Reiniciar"),
         onPressed: () {
           showDialog(
             context: context,
             builder: (BuildContext context) {
-              return AlertDialog(
-                title: const Row(
-                  children: [Text("Reiniciar"), Icon(Icons.restore_outlined)],
-                ),
-                content: const Text("Gostaria de deletar a leitura?"),
-                actions: <Widget>[
-                  TextButton(
-                    child: const Text("Não"),
-                    onPressed: () {
-                      context.safePop();
-                    },
-                  ),
-                  TextButton(
-                    child: const Text("Sim"),
-                    onPressed: () {
-                      widget.book.status = "toRead";
-                      widget.book.progress = 0;
-                      SQLHelper.updateItem(widget.book.id, widget.book);
-                      context.safePop();
-                    },
-                  ),
-                ],
-              );
+              return ResetAlertDialog(widget: widget);
             },
           );
         },
@@ -343,15 +307,70 @@ class _BookSummaryState extends State<BookSummary> {
   }
 }
 
+class ResetAlertDialog extends StatelessWidget {
+  const ResetAlertDialog({
+    super.key,
+    required this.widget,
+  });
+
+  final BookSummary widget;
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: const Row(
+        children: [Text("Reiniciar"), Icon(Icons.restore_outlined)],
+      ),
+      content: const Text("Gostaria de reiniciar a leitura?"),
+      actions: <Widget>[
+        TextButton(
+          child: const Text("Não"),
+          onPressed: () {
+            context.safePop();
+          },
+        ),
+        TextButton(
+          child: const Text("Sim"),
+          onPressed: () {
+            widget.book.status = "toRead";
+            widget.book.progress = 0;
+            SQLHelper.updateItem(widget.book.id, widget.book);
+            context.safePop();
+          },
+        ),
+      ],
+    );
+  }
+}
+
+class TextReadStatusButton extends StatelessWidget {
+  const TextReadStatusButton({
+    super.key,
+    required this.text,
+  });
+
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      "$text",
+      style: FlutterFlowTheme.of(context).bodyMedium.override(
+            fontFamily: 'Readex Pro',
+            color: Colors.white,
+            fontSize: 18.0,
+          ),
+    );
+  }
+}
+
 class InitalProgress extends StatelessWidget {
   const InitalProgress({
     super.key,
-    required this.context,
     required this.book,
   });
 
   final Book book;
-  final BuildContext context;
 
   @override
   Widget build(BuildContext context) {
@@ -492,25 +511,49 @@ class _FormProgressState extends State<FormProgress> {
         Padding(
           padding: const EdgeInsets.all(28.0),
           child: FFButtonWidget(
-            onPressed: () async {
-              int addProgress = (int.parse(widget._progressController.text));
-              if (widget.book.status == "toRead" && widget.book.progress == 0) {
-                widget.book.status = "reading";
-              }
+            onPressed: () {
+              setState(() async {
+                int addProgress = int.parse(widget._progressController.text);
+                int total = int.parse(widget._totalController.text);
 
-              widget.book.progress = addProgress;
+                if (widget.book.status == "toRead" &&
+                    widget.book.progress == 0) {
+                  widget.book.status = "reading";
+                }
 
-              if (widget.book.progress! >= widget.book.pages) {
-                widget.book.status = "read";
-              }
+                widget.book.progress = addProgress;
+                if (widget.book.howToRead == "Páginas") {
+                  widget.book.pages = total;
+                } else if (widget.book.howToRead == "Capítulos") {
+                  widget.book.chapters = total;
+                }
 
-              print(
-                  "Progresso do livro ${widget.book.title} : ${widget.book.progress}");
+                print(
+                    "Progresso do livro ${widget.book.title} : ${widget.book.progress}");
 
-              SQLHelper.updateItem(widget.book.id, widget.book);
+                SQLHelper.updateItem(widget.book.id, widget.book);
+                context.safePop();
 
-              context.safePop();
-              setState(() {});
+                if (widget.book.progress! >= widget.book.pages) {
+                  widget.book.status = "read";
+
+                  await showDialog(
+                    context: context,
+                    builder: (alertDialogContext) {
+                      return AlertDialog(
+                        title: Text('Livro concluído'),
+                        content: Text('Parabéns! Você terminou mais um livro!'),
+                        actions: [
+                          TextButton(
+                            onPressed: () => alertDialogContext.safePop(),
+                            child: Text('Ok'),
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                }
+              });
             },
             text: "Lançar",
             options: FFButtonOptions(

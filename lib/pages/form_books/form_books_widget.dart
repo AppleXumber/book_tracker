@@ -153,6 +153,7 @@ class _FormBooksWidgetState extends State<FormBooksWidget> {
         body: SafeArea(
           top: true,
           child: SingleChildScrollView(
+            padding: EdgeInsetsDirectional.only(bottom: 60),
             child: Column(
               mainAxisSize: MainAxisSize.max,
               children: [
@@ -612,29 +613,31 @@ class _FormBooksWidgetState extends State<FormBooksWidget> {
                                   .asValidator(context),
                             ),
                           ),
-                          FlutterFlowDropDown<String>(
+
+
+                          /*FlutterFlowDropDown<String>(
                             controller: _model.dropDownValueController ??=
                                 FormFieldController<String>(
                               _model.dropDownValue ??=
                                   FFLocalizations.of(context).getText(
-                                'jwjk7mly' /* Adicionar a uma lista */,
+                                'jwjk7mly' *//* Adicionar a uma lista *//*,
                               ),
                             ),
                             options: [
                               FFLocalizations.of(context).getText(
-                                'ge47vx0f' /* Adicionar a uma lista */,
+                                'ge47vx0f' *//* Adicionar a uma lista *//*,
                               ),
                               FFLocalizations.of(context).getText(
-                                'd3gd18l7' /* 5 */,
+                                'd3gd18l7' *//* 5 *//*,
                               ),
                               FFLocalizations.of(context).getText(
-                                'ydueeq79' /* 10 */,
+                                'ydueeq79' *//* 10 *//*,
                               ),
                               FFLocalizations.of(context).getText(
-                                'u0x7799m' /* 15 */,
+                                'u0x7799m' *//* 15 *//*,
                               ),
                               FFLocalizations.of(context).getText(
-                                'gv1fqhjt' /* 20 */,
+                                'gv1fqhjt' *//* 20 *//*,
                               )
                             ],
                             onChanged: (val) =>
@@ -643,7 +646,7 @@ class _FormBooksWidgetState extends State<FormBooksWidget> {
                             height: 50.0,
                             textStyle: FlutterFlowTheme.of(context).bodyMedium,
                             hintText: FFLocalizations.of(context).getText(
-                              'uwd4g9x6' /* Adicionar a uma lista */,
+                              'uwd4g9x6' *//* Adicionar a uma lista *//*,
                             ),
                             icon: Icon(
                               Icons.keyboard_arrow_down_rounded,
@@ -659,7 +662,9 @@ class _FormBooksWidgetState extends State<FormBooksWidget> {
                             hidesUnderline: true,
                             isSearchable: false,
                             isMultiSelect: false,
-                          ),
+                          ),*/
+
+
                           Padding(
                             padding: EdgeInsetsDirectional.fromSTEB(
                                 0.0, 50.0, 0.0, 0.0),
@@ -1278,8 +1283,7 @@ class _FormBooksWidgetState extends State<FormBooksWidget> {
                           Align(
                             alignment: AlignmentDirectional(0.00, 1.00),
                             child: Padding(
-                              padding: EdgeInsetsDirectional.fromSTEB(
-                                  0.0, 0.0, 0.0, 30.0),
+                              padding: EdgeInsetsDirectional.all(30),
                               child: FFButtonWidget(
                                 onPressed: () async {
                                   String title =

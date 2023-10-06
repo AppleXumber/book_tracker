@@ -1,16 +1,12 @@
 import '../../components/fab_form_book.dart';
 import '../../components/get_itens.dart';
-import '../../flutter_flow/flutter_flow_widgets.dart';
 import '/components/drawer_widget.dart';
-import '/components/bookSummary_widget.dart';
-import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'home_page_model.dart';
 export 'home_page_model.dart';
-import '../../classes/books.dart';
 import "../../database/sql_helper.dart";
 
 class HomePageWidget extends StatefulWidget {
@@ -114,9 +110,20 @@ class _HomePageWidgetState extends State<HomePageWidget> {
             child: SingleChildScrollView(
               primary: true,
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  Padding(
+                    padding: const EdgeInsets.all(18.0),
+                    child: Text("Leituras em progresso:",
+                        style: TextStyle(fontSize: 16)),
+                  ),
                   GetItensListView(
                       getter: SQLHelper.getStatus("reading"), toAdd: true),
+                  Padding(
+                    padding: const EdgeInsets.all(18.0),
+                    child: Text("Leituras futuras:",
+                        style: TextStyle(fontSize: 16)),
+                  ),
                   GetItensListView(
                       getter: SQLHelper.getStatus("toRead"), toAdd: false),
                 ],

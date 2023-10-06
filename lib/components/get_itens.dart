@@ -2,7 +2,6 @@ import 'package:book_tracker/flutter_flow/flutter_flow_util.dart';
 import 'package:flutter/material.dart';
 
 import '../classes/books.dart';
-import '../database/sql_helper.dart';
 import '../flutter_flow/flutter_flow_theme.dart';
 import '../flutter_flow/flutter_flow_widgets.dart';
 import 'bookSummary_widget.dart';
@@ -65,7 +64,6 @@ class GetItensListView extends StatelessWidget {
                     ),
                   ),
                 );
-
               }
             }
             return Column(
@@ -75,7 +73,6 @@ class GetItensListView extends StatelessWidget {
                 BookSummary(livro),
               ],
             );
-            break;
         }
       },
     );
@@ -94,7 +91,13 @@ class WarningNoBookAdd extends StatelessWidget {
         padding: EdgeInsets.all(55.0),
         child: Column(
           children: [
-            Icon(Icons.bookmark_add_outlined, size: 100),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.menu_book_sharp, size: 100),
+                Icon(Icons.add, size: 100),
+              ],
+            ),
             Text(
               "Não há nenhum livro",
               style: TextStyle(fontSize: 28),
