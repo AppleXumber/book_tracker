@@ -108,6 +108,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
           child: Align(
             alignment: AlignmentDirectional(0.00, -1.00),
             child: SingleChildScrollView(
+              padding: EdgeInsetsDirectional.only(bottom: 100.0),
               primary: true,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,

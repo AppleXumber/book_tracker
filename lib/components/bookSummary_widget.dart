@@ -374,6 +374,8 @@ class InitalProgress extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    bool isStartReading = book.status != "toRead";
+    print(isStartReading);
     return Container(
       padding: EdgeInsets.only(
         top: 15,
@@ -382,9 +384,13 @@ class InitalProgress extends StatelessWidget {
         // this will prevent the soft keyboard from covering the text fields
         bottom: MediaQuery.of(context).viewInsets.bottom + 120,
       ),
-      child: FormProgress(
-        book: book,
-      ),
+      child: isStartReading
+          ? FormProgress(
+              book: book,
+            )
+          : StartReadingProgress(
+              book: book,
+            ),
     );
   }
 }
@@ -431,10 +437,11 @@ class _FormProgressState extends State<FormProgress> {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Text(
-          "Inicar o livro: ${book.title}",
+          "Lançar leitura para o livro: ${book.title}",
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.max,
           children: [
             Expanded(
               child: TextField(
@@ -514,8 +521,7 @@ class _FormProgressState extends State<FormProgress> {
                 int addProgress = int.parse(_progressController.text);
                 int total = int.parse(_totalController.text);
 
-                if (book.status == "toRead" &&
-                    book.progress == 0) {
+                if (book.status == "toRead" && book.progress == 0) {
                   book.status = "reading";
                   context.safePop();
                 }
@@ -527,8 +533,7 @@ class _FormProgressState extends State<FormProgress> {
                   book.chapters = total;
                 }
 
-                print(
-                    "Progresso do livro ${book.title} : ${book.progress}");
+                print("Progresso do livro ${book.title} : ${book.progress}");
 
                 SQLHelper.updateItem(book.id, book);
                 context.safePop();
@@ -553,6 +558,99 @@ class _FormProgressState extends State<FormProgress> {
                   );
                 }
               });
+            },
+            text: "Lançar",
+            options: FFButtonOptions(
+              padding: EdgeInsetsDirectional.symmetric(horizontal: 16.0),
+              height: 40.0,
+              color: Color(0xFF10403B),
+              textStyle: FlutterFlowTheme.of(context)
+                  .bodyLarge
+                  .override(fontFamily: 'Readex Pro', color: Colors.white),
+              elevation: 3.0,
+              borderSide: BorderSide(
+                color: Colors.transparent,
+                width: 1.0,
+              ),
+              borderRadius: BorderRadius.circular(8.0),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class StartReadingProgress extends StatefulWidget {
+  StartReadingProgress({
+    super.key,
+    required this.book,
+  });
+
+  final Book book;
+
+  @override
+  State<StartReadingProgress> createState() => StartReadingProgressState();
+}
+
+class StartReadingProgressState extends State<StartReadingProgress> {
+  final TextEditingController _progressController = TextEditingController();
+  final TextEditingController _totalController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    Book book = widget.book;
+    var intProgress = int.tryParse(showData(book.progress));
+    var intGoal = int.tryParse(showData(book.goal));
+    int progressAdded = intProgress! + intGoal!;
+    _progressController.text = progressAdded.toString();
+    _totalController.text = book.pages.toString();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    Book book = widget.book;
+    double percentage =
+        int.parse(_progressController.text) / int.parse(_totalController.text);
+    if (percentage > 1) {
+      percentage = 1;
+      _progressController.text = _totalController.text;
+    }
+
+    String howToRead = "Páginas";
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Text(
+          "Inicar o livro: ${book.title}",
+        ),
+        RadioListTile(
+            value: "Páginas",
+            groupValue: howToRead,
+            onChanged: (value) {
+              setState(() {
+                howToRead = value.toString();
+                print(howToRead);
+              });
+            }),
+        RadioListTile(
+            value: "Capitulos",
+            groupValue: howToRead,
+            onChanged: (value) {
+              setState(() {
+                howToRead = value.toString();
+                print(howToRead);
+              });
+            }),
+        Padding(
+          padding: const EdgeInsets.all(28.0),
+          child: FFButtonWidget(
+            onPressed: () {
+              print("Teste");
+              context.safePop();
             },
             text: "Lançar",
             options: FFButtonOptions(
