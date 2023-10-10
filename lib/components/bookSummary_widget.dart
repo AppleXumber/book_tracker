@@ -374,13 +374,6 @@ class InitalProgress extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final TextEditingController _progressController = TextEditingController();
-    final TextEditingController _totalController = TextEditingController();
-    var intProgress = int.tryParse(showData(book.progress));
-    var intGoal = int.tryParse(showData(book.goal));
-    int progressAdded = intProgress! + intGoal!;
-    _progressController.text = progressAdded.toString();
-    _totalController.text = book.pages.toString();
     return Container(
       padding: EdgeInsets.only(
         top: 15,
@@ -390,9 +383,8 @@ class InitalProgress extends StatelessWidget {
         bottom: MediaQuery.of(context).viewInsets.bottom + 120,
       ),
       child: FormProgress(
-          book: book,
-          progressController: _progressController,
-          totalController: _totalController),
+        book: book,
+      ),
     );
   }
 }
@@ -401,41 +393,52 @@ class FormProgress extends StatefulWidget {
   FormProgress({
     super.key,
     required this.book,
-    required TextEditingController progressController,
-    required TextEditingController totalController,
-  })  : _progressController = progressController,
-        _totalController = totalController;
+  });
 
   final Book book;
-  final TextEditingController _progressController;
-  final TextEditingController _totalController;
 
   @override
   State<FormProgress> createState() => _FormProgressState();
 }
 
 class _FormProgressState extends State<FormProgress> {
+  final TextEditingController _progressController = TextEditingController();
+  final TextEditingController _totalController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    Book book = widget.book;
+    var intProgress = int.tryParse(showData(book.progress));
+    var intGoal = int.tryParse(showData(book.goal));
+    int progressAdded = intProgress! + intGoal!;
+    _progressController.text = progressAdded.toString();
+    _totalController.text = book.pages.toString();
+  }
+
   @override
   Widget build(BuildContext context) {
-    double percentage = int.parse(widget._progressController.text) /
-        int.parse(widget._totalController.text);
+    Book book = widget.book;
+    double percentage =
+        int.parse(_progressController.text) / int.parse(_totalController.text);
     if (percentage > 1) {
       percentage = 1;
-      widget._progressController.text = widget._totalController.text;
+      _progressController.text = _totalController.text;
     }
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Text(
-          "Inicar o livro: ${widget.book.title}",
+          "Inicar o livro: ${book.title}",
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Expanded(
               child: TextField(
-                controller: widget._progressController,
+                controller: _progressController,
                 decoration: const InputDecoration(hintText: 'Paginas lidas'),
                 keyboardType: TextInputType.number,
                 autofocus: true,
@@ -443,17 +446,14 @@ class _FormProgressState extends State<FormProgress> {
                   return;
                 },
                 onChanged: (value) {
-                  setState(() {
-                    _FormProgressState();
-                    if (int.parse(widget._progressController.text) >
-                        int.parse(widget._totalController.text)) {
-                      widget._progressController.text =
-                          widget._totalController.text;
-                    }
-                    if (percentage > 1) {
-                      percentage = 1;
-                    }
-                  });
+                  if (int.parse(_progressController.text) >
+                      int.parse(_totalController.text)) {
+                    _progressController.text = _totalController.text;
+                  }
+                  if (percentage > 1) {
+                    percentage = 1;
+                  }
+                  setState(() {});
                 },
               ),
             ),
@@ -463,21 +463,19 @@ class _FormProgressState extends State<FormProgress> {
             ),
             Expanded(
               child: TextField(
-                controller: widget._totalController,
+                controller: _totalController,
                 decoration: const InputDecoration(hintText: 'Paginas totais'),
                 keyboardType: TextInputType.number,
                 onChanged: (value) {
-                  setState(() {
-                    if (int.parse(widget._progressController.text) >
-                        int.parse(widget._totalController.text)) {
-                      widget._progressController.text =
-                          widget._totalController.text;
-                    }
+                  if (int.parse(_progressController.text) >
+                      int.parse(_totalController.text)) {
+                    _progressController.text = _totalController.text;
+                  }
 
-                    if (percentage > 1) {
-                      percentage = 1;
-                    }
-                  });
+                  if (percentage > 1) {
+                    percentage = 1;
+                  }
+                  setState(() {});
                 },
               ),
             ),
@@ -496,7 +494,7 @@ class _FormProgressState extends State<FormProgress> {
               padding: EdgeInsetsDirectional.fromSTEB(
                   0.0, 0.0, MediaQuery.sizeOf(context).width * 0.75, 0.0),
               child: Text(
-                "${((int.parse(widget._progressController.text) / int.parse(widget._totalController.text)) * 100).floor()}%",
+                "${((int.parse(_progressController.text) / int.parse(_totalController.text)) * 100).floor()}%",
                 textAlign: TextAlign.start,
                 style: FlutterFlowTheme.of(context).titleSmall,
               ),
@@ -513,29 +511,30 @@ class _FormProgressState extends State<FormProgress> {
           child: FFButtonWidget(
             onPressed: () {
               setState(() async {
-                int addProgress = int.parse(widget._progressController.text);
-                int total = int.parse(widget._totalController.text);
+                int addProgress = int.parse(_progressController.text);
+                int total = int.parse(_totalController.text);
 
-                if (widget.book.status == "toRead" &&
-                    widget.book.progress == 0) {
-                  widget.book.status = "reading";
+                if (book.status == "toRead" &&
+                    book.progress == 0) {
+                  book.status = "reading";
+                  context.safePop();
                 }
 
-                widget.book.progress = addProgress;
-                if (widget.book.howToRead == "Páginas") {
-                  widget.book.pages = total;
-                } else if (widget.book.howToRead == "Capítulos") {
-                  widget.book.chapters = total;
+                book.progress = addProgress;
+                if (book.howToRead == "Páginas") {
+                  book.pages = total;
+                } else if (book.howToRead == "Capítulos") {
+                  book.chapters = total;
                 }
 
                 print(
-                    "Progresso do livro ${widget.book.title} : ${widget.book.progress}");
+                    "Progresso do livro ${book.title} : ${book.progress}");
 
-                SQLHelper.updateItem(widget.book.id, widget.book);
+                SQLHelper.updateItem(book.id, book);
                 context.safePop();
 
-                if (widget.book.progress! >= widget.book.pages) {
-                  widget.book.status = "read";
+                if (book.progress! >= book.pages) {
+                  book.status = "read";
 
                   await showDialog(
                     context: context,
