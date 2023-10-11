@@ -596,80 +596,140 @@ class StartReadingProgress extends StatefulWidget {
 class StartReadingProgressState extends State<StartReadingProgress> {
   final TextEditingController _progressController = TextEditingController();
   final TextEditingController _totalController = TextEditingController();
+  String _howToRead = "Páginas";
+  TextEditingController _goal = TextEditingController();
+
+  bool valueValidator(String? value) {
+    if (value != null && value.isEmpty) {
+      return true;
+    }
+    return false;
+  }
+
+  final _formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
     super.initState();
     Book book = widget.book;
-    var intProgress = int.tryParse(showData(book.progress));
-    var intGoal = int.tryParse(showData(book.goal));
-    int progressAdded = intProgress! + intGoal!;
-    _progressController.text = progressAdded.toString();
-    _totalController.text = book.pages.toString();
   }
 
   @override
   Widget build(BuildContext context) {
     Book book = widget.book;
-    double percentage =
-        int.parse(_progressController.text) / int.parse(_totalController.text);
-    if (percentage > 1) {
-      percentage = 1;
-      _progressController.text = _totalController.text;
-    }
 
-    String howToRead = "Páginas";
-
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Text(
-          "Inicar o livro: ${book.title}",
-        ),
-        RadioListTile(
-            value: "Páginas",
-            groupValue: howToRead,
-            onChanged: (value) {
-              setState(() {
-                howToRead = value.toString();
-                print(howToRead);
-              });
-            }),
-        RadioListTile(
-            value: "Capitulos",
-            groupValue: howToRead,
-            onChanged: (value) {
-              setState(() {
-                howToRead = value.toString();
-                print(howToRead);
-              });
-            }),
-        Padding(
-          padding: const EdgeInsets.all(28.0),
-          child: FFButtonWidget(
-            onPressed: () {
-              print("Teste");
-              context.safePop();
-            },
-            text: "Lançar",
-            options: FFButtonOptions(
-              padding: EdgeInsetsDirectional.symmetric(horizontal: 16.0),
-              height: 40.0,
-              color: Color(0xFF10403B),
-              textStyle: FlutterFlowTheme.of(context)
-                  .bodyLarge
-                  .override(fontFamily: 'Readex Pro', color: Colors.white),
-              elevation: 3.0,
-              borderSide: BorderSide(
-                color: Colors.transparent,
-                width: 1.0,
-              ),
-              borderRadius: BorderRadius.circular(8.0),
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Form(
+        key: _formKey,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Text(
+              "Inicar o livro: ${book.title}",
             ),
-          ),
+            Row(
+              children: [
+                Expanded(
+                  child: RadioListTile<String>(
+                      title: Text("Páginas"),
+                      value: "Páginas",
+                      groupValue: _howToRead,
+                      onChanged: (value) {
+                        setState(() {
+                          _howToRead = value.toString();
+                          print(_howToRead);
+                        });
+                      }),
+                ),
+                Expanded(
+                  child: RadioListTile<String>(
+                    title: Text("Capítulos",
+                        style: book.chapters == 0 ? TextStyle(
+                          color: Colors.grey,
+                          decoration: TextDecoration.lineThrough,
+                        ) : TextStyle()),
+                    value: "Capitulos",
+                    groupValue: _howToRead,
+                    onChanged: (value) {
+                      setState(() {
+                        if (book.chapters == 0) {
+                          _howToRead = "Páginas";
+                          showDialog(
+                            context: context,
+                            builder: (alertDialogContext) {
+                              return AlertDialog(
+                                title: Text('Este livro não tem capítulos.'),
+                                content: Text(
+                                    'Cadastre uma quantidade de capítulos para estre livro.'),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () => alertDialogContext.safePop(),
+                                    child: Text('Ok'),
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                        } else {
+                          _howToRead = value.toString();
+                        }
+                        print(_howToRead);
+                      });
+                    },
+                  ),
+                ),
+              ],
+            ),
+            TextFormField(
+              controller: _goal,
+              keyboardType: TextInputType.number,
+              decoration: InputDecoration(
+                hintText: "$_howToRead por dia",
+              ),
+              validator: (value) {
+                if (valueValidator(value)) {
+                  return "Insira uma quantidade de $_howToRead";
+                }
+                return null;
+              },
+            ),
+            Padding(
+              padding: const EdgeInsets.all(28.0),
+              child: FFButtonWidget(
+                onPressed: () {
+                  if (_formKey.currentState!.validate()) {
+                    print("Teste");
+                    book.howToRead = _howToRead;
+                    book.goal = _goal.value.text;
+                    book.status = "reading";
+                    print("Como ler: ${book.howToRead}\nQuanto ler: ${book.goal}");
+                    SQLHelper.updateItem(book.id, book);
+                    context.safePop();
+                    context.safePop();
+                  }
+                },
+                text: "Lançar",
+                options: FFButtonOptions(
+                  padding: EdgeInsetsDirectional.symmetric(horizontal: 16.0),
+                  height: 40.0,
+                  color: Color(0xFF10403B),
+                  textStyle: FlutterFlowTheme.of(context)
+                      .bodyLarge
+                      .override(fontFamily: 'Readex Pro', color: Colors.white),
+                  elevation: 3.0,
+                  borderSide: BorderSide(
+                    color: Colors.transparent,
+                    width: 1.0,
+                  ),
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+              ),
+            ),
+          ],
         ),
-      ],
+      ),
     );
   }
 }
