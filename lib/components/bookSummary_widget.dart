@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:book_tracker/database/sql_helper.dart';
 import 'package:book_tracker/pages/book_info/book_info_widget.dart';
 
@@ -18,6 +20,7 @@ class BookSummary extends StatefulWidget {
 
   @override
   _BookSummaryState createState() => _BookSummaryState();
+
 }
 
 class _BookSummaryState extends State<BookSummary> {
@@ -110,7 +113,6 @@ class _BookSummaryState extends State<BookSummary> {
 
   @override
   Widget build(BuildContext context) {
-    context.watch<FFAppState>();
 
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(20.0, 20.0, 20.0, 20.0),
@@ -214,9 +216,7 @@ class _BookSummaryState extends State<BookSummary> {
                                   mainAxisSize: MainAxisSize.max,
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(
-                                      DateFormat("dd/MM/yyyy")
-                                          .format(DateTime.now()),
+                                    Text(showData(widget.book.startReading),
                                       style: FlutterFlowTheme.of(context)
                                           .bodyMedium
                                           .override(
@@ -597,7 +597,11 @@ class StartReadingProgressState extends State<StartReadingProgress> {
   final TextEditingController _progressController = TextEditingController();
   final TextEditingController _totalController = TextEditingController();
   String _howToRead = "Páginas";
+  String _howEnd = "daily";
   TextEditingController _goal = TextEditingController();
+  TextEditingController _dateController = TextEditingController();
+  int howManyDays = 0;
+  String prediction = DateFormat("dd/MM/yyyy").format(DateTime.now());
 
   bool valueValidator(String? value) {
     if (value != null && value.isEmpty) {
@@ -611,7 +615,6 @@ class StartReadingProgressState extends State<StartReadingProgress> {
   @override
   void initState() {
     super.initState();
-    Book book = widget.book;
   }
 
   @override
@@ -619,7 +622,7 @@ class StartReadingProgressState extends State<StartReadingProgress> {
     Book book = widget.book;
 
     return Padding(
-      padding: const EdgeInsets.all(16.0),
+      padding: const EdgeInsets.all(6.0),
       child: Form(
         key: _formKey,
         child: Column(
@@ -629,71 +632,213 @@ class StartReadingProgressState extends State<StartReadingProgress> {
             Text(
               "Inicar o livro: ${book.title}",
             ),
-            Row(
-              children: [
-                Expanded(
-                  child: RadioListTile<String>(
-                      title: Text("Páginas"),
-                      value: "Páginas",
-                      groupValue: _howToRead,
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 15),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Rastrear por:",
+                    style: TextStyle(fontWeight: FontWeight.w500),
+                  ),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: RadioListTile<String>(
+                            title: Text("Páginas"),
+                            value: "Páginas",
+                            groupValue: _howToRead,
+                            onChanged: (value) {
+                              setState(() {
+                                _howToRead = value.toString();
+                                print(_howToRead);
+                              });
+                            }),
+                      ),
+                      Expanded(
+                        child: RadioListTile<String>(
+                          title: Text("Capítulos",
+                              style: book.chapters == 0
+                                  ? TextStyle(
+                                      color: Colors.grey,
+                                      decoration: TextDecoration.lineThrough,
+                                    )
+                                  : TextStyle()),
+                          value: "Capitulos",
+                          groupValue: _howToRead,
+                          onChanged: (value) {
+                            setState(() {
+                              if (book.chapters == 0) {
+                                _howToRead = "Páginas";
+                                showDialog(
+                                  context: context,
+                                  builder: (alertDialogContext) {
+                                    return AlertDialog(
+                                      title:
+                                          Text('Este livro não tem capítulos.'),
+                                      content: Text(
+                                          'Cadastre uma quantidade de capítulos para estre livro.'),
+                                      actions: [
+                                        TextButton(
+                                          onPressed: () =>
+                                              alertDialogContext.safePop(),
+                                          child: Text('Ok'),
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                );
+                              } else {
+                                _howToRead = value.toString();
+                              }
+                              print(_howToRead);
+                            });
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 15),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Como será sua meta:",
+                    style: TextStyle(fontWeight: FontWeight.w500),
+                  ),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: RadioListTile<String>(
+                            title: _howToRead == "Páginas"
+                                ? Text("$_howToRead diárias")
+                                : Text("$_howToRead diários"),
+                            value: "daily",
+                            groupValue: _howEnd,
+                            onChanged: (value) {
+                              setState(() {
+                                _howEnd = value.toString();
+                                print(_howEnd);
+                              });
+                            }),
+                      ),
+                      Expanded(
+                        child: RadioListTile<String>(
+                          title: Text("Meta de data final"),
+                          value: "finalDate",
+                          groupValue: _howEnd,
+                          onChanged: (value) {
+                            setState(() {
+                              _howEnd = value.toString();
+                              print(_howEnd);
+                            });
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: _howEnd == "daily"
+                  ? TextFormField(
+                      controller: _goal,
+                      keyboardType: TextInputType.number,
+                      autofocus: true,
+                      decoration: InputDecoration(
+                        icon: Icon(Icons.book),
+                        hintText: "$_howToRead por dia",
+                      ),
+                      validator: (value) {
+                        if (valueValidator(value)) {
+                          return "Insira uma quantidade de $_howToRead";
+                        }
+                        return null;
+                      },
                       onChanged: (value) {
                         setState(() {
-                          _howToRead = value.toString();
-                          print(_howToRead);
+                          if (_goal.text == "" || _goal.text == "0") {
+                            howManyDays = 0;
+                          } else {
+                            howManyDays =
+                                (book.pages / int.parse(_goal.text)).ceil();
+                          }
+
+                          if (int.parse(_goal.text) > book.pages) {
+                            _goal.text = book.pages.toString();
+                          }
+                          _dateController.text = DateFormat("dd/MM/yyyy")
+                              .format(DateTime.now()
+                                  .add(Duration(days: howManyDays)));
+                          prediction = _dateController.text;
+                          print("Quantos dias: $howManyDays");
                         });
-                      }),
-                ),
-                Expanded(
-                  child: RadioListTile<String>(
-                    title: Text("Capítulos",
-                        style: book.chapters == 0 ? TextStyle(
-                          color: Colors.grey,
-                          decoration: TextDecoration.lineThrough,
-                        ) : TextStyle()),
-                    value: "Capitulos",
-                    groupValue: _howToRead,
-                    onChanged: (value) {
-                      setState(() {
-                        if (book.chapters == 0) {
-                          _howToRead = "Páginas";
-                          showDialog(
+                      },
+                    )
+                  : TextField(
+                      controller: _dateController,
+                      decoration: const InputDecoration(
+                          icon: Icon(Icons.calendar_today),
+                          labelText: "Data final"),
+                      readOnly: true,
+                      onTap: () async {
+                        DateTime? pickedDate = await showDatePicker(
                             context: context,
-                            builder: (alertDialogContext) {
-                              return AlertDialog(
-                                title: Text('Este livro não tem capítulos.'),
-                                content: Text(
-                                    'Cadastre uma quantidade de capítulos para estre livro.'),
-                                actions: [
-                                  TextButton(
-                                    onPressed: () => alertDialogContext.safePop(),
-                                    child: Text('Ok'),
-                                  ),
-                                ],
-                              );
-                            },
-                          );
+                            initialDate:
+                                DateTime.now().add(Duration(days: howManyDays)),
+                            firstDate: DateTime.now(),
+                            lastDate: DateTime(2101));
+
+                        if (pickedDate != null) {
+                          print(pickedDate);
+                          String formattedDate =
+                              DateFormat('dd/MM/yyyy').format(pickedDate);
+                          print(formattedDate);
+
+                          howManyDays = int.parse(pickedDate
+                                  .difference(DateTime.now())
+                                  .inDays
+                                  .toString()) +
+                              1;
+
+                          print("Quantos dias: $howManyDays");
+                          _goal.text =
+                              (book.pages / howManyDays).ceil().toString();
+                          print("Goal: ${(book.pages / howManyDays).ceil()}");
+                          prediction = DateFormat("dd/MM/yyyy").format(
+                              DateTime.now().add(Duration(days: howManyDays)));
+
+                          setState(() {
+                            _dateController.text = formattedDate;
+                          });
                         } else {
-                          _howToRead = value.toString();
+                          print("Date is not selected");
                         }
-                        print(_howToRead);
-                      });
-                    },
-                  ),
-                ),
-              ],
+                      }),
             ),
-            TextFormField(
-              controller: _goal,
-              keyboardType: TextInputType.number,
-              decoration: InputDecoration(
-                hintText: "$_howToRead por dia",
-              ),
-              validator: (value) {
-                if (valueValidator(value)) {
-                  return "Insira uma quantidade de $_howToRead";
-                }
-                return null;
-              },
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: _howEnd == "daily"
+                  ? Column(
+                      children: [
+                        Text("Previsão de término: $prediction"),
+                        Text("($howManyDays dias de leitura)"),
+                      ],
+                    )
+                  : Column(
+                      children: [
+                        _howToRead == "Páginas"
+                            ? Text("$_howToRead diárias: ${_goal.text}")
+                            : Text("$_howToRead diários: ${_goal.text}"),
+                        Text("($howManyDays dias de leitura)"),
+                      ],
+                    ),
             ),
             Padding(
               padding: const EdgeInsets.all(28.0),
@@ -704,7 +849,8 @@ class StartReadingProgressState extends State<StartReadingProgress> {
                     book.howToRead = _howToRead;
                     book.goal = _goal.value.text;
                     book.status = "reading";
-                    print("Como ler: ${book.howToRead}\nQuanto ler: ${book.goal}");
+                    print(
+                        "Como ler: ${book.howToRead}\nQuanto ler: ${book.goal}");
                     SQLHelper.updateItem(book.id, book);
                     context.safePop();
                     context.safePop();
