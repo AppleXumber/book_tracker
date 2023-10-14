@@ -30,7 +30,8 @@ class _BookSummaryState extends State<BookSummary> {
   }
 
   returnTextButton() {
-    if (widget.book.status == "reading") {
+    Book book = widget.book;
+    if (book.status == "reading") {
       return TextButton(
         child: TextReadStatusButton(text: "Lançar"),
         onPressed: () {
@@ -38,19 +39,19 @@ class _BookSummaryState extends State<BookSummary> {
                   context: context,
                   elevation: 5,
                   isScrollControlled: true,
-                  builder: (context) => InitalProgress(book: widget.book))
+                  builder: (context) => ModalContainer(book: book))
               .then((value) => setState(() {}));
         },
         onLongPress: () {
           showDialog(
             context: context,
             builder: (BuildContext context) {
-              return ResetAlertDialog(widget: widget);
+              return ResetAlertDialog(book: book);
             },
           );
         },
       );
-    } else if (widget.book.status == "toRead") {
+    } else if (book.status == "toRead") {
       return TextButton(
         child: TextReadStatusButton(text: "Iniciar"),
         onPressed: () {
@@ -58,18 +59,18 @@ class _BookSummaryState extends State<BookSummary> {
                   context: context,
                   elevation: 5,
                   isScrollControlled: true,
-                  builder: (context) => InitalProgress(book: widget.book))
+                  builder: (context) => ModalContainer(book: book))
               .then((value) => setState(() {}));
         },
       );
-    } else if (widget.book.status == "read") {
+    } else if (book.status == "read") {
       return TextButton(
         child: TextReadStatusButton(text: "Reiniciar"),
         onPressed: () {
           showDialog(
             context: context,
             builder: (BuildContext context) {
-              return ResetAlertDialog(widget: widget);
+              return ResetAlertDialog(book: book);
             },
           );
         },
@@ -78,9 +79,10 @@ class _BookSummaryState extends State<BookSummary> {
   }
 
   returnImage() {
-    if (widget.book.image != null) {
+    Book book = widget.book;
+    if (book.image != null) {
       return Image.network(
-        "${widget.book.image}",
+        "${book.image}",
         width: 100.0,
         height: 125.0,
         fit: BoxFit.cover,
@@ -109,9 +111,10 @@ class _BookSummaryState extends State<BookSummary> {
 
   @override
   Widget build(BuildContext context) {
-    if (widget.book.status == "toRead") {
-      widget.book.startReading = "";
-      widget.book.endReading = "";
+    Book book = widget.book;
+    if (book.status == "toRead") {
+      book.startReading = "";
+      book.endReading = "";
     }
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(20.0, 20.0, 20.0, 20.0),
@@ -135,8 +138,7 @@ class _BookSummaryState extends State<BookSummary> {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) =>
-                            BookInfoWidget(book: widget.book))).then(
+                        builder: (context) => BookInfoWidget(book: book))).then(
                   (value) => setState(
                     () {
                       print('Recarregando tela inicial');
@@ -168,7 +170,7 @@ class _BookSummaryState extends State<BookSummary> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            widget.book.title,
+                            book.title,
                             style: FlutterFlowTheme.of(context)
                                 .bodyMedium
                                 .override(
@@ -216,7 +218,7 @@ class _BookSummaryState extends State<BookSummary> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      showData(widget.book.startReading),
+                                      showData(book.startReading),
                                       style: FlutterFlowTheme.of(context)
                                           .bodyMedium
                                           .override(
@@ -225,7 +227,7 @@ class _BookSummaryState extends State<BookSummary> {
                                           ),
                                     ),
                                     Text(
-                                      showData(widget.book.endReading),
+                                      showData(book.endReading),
                                       style: FlutterFlowTheme.of(context)
                                           .bodyMedium
                                           .override(
@@ -247,13 +249,13 @@ class _BookSummaryState extends State<BookSummary> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  widget.book.howToRead == "Páginas"
-                                      ? widget.book.progress.toString() +
+                                  book.howToRead == "Páginas"
+                                      ? book.progress.toString() +
                                           " páginas de " +
-                                          widget.book.pages.toString()
-                                      : widget.book.progress.toString() +
+                                          book.pages.toString()
+                                      : book.progress.toString() +
                                           " capítulos de " +
-                                          widget.book.chapters.toString(),
+                                          book.chapters.toString(),
                                   style: FlutterFlowTheme.of(context)
                                       .bodyMedium
                                       .override(
@@ -262,12 +264,10 @@ class _BookSummaryState extends State<BookSummary> {
                                       ),
                                 ),
                                 LinearPercentIndicator(
-                                  percent: widget.book.howToRead == "Páginas"
-                                      ? widget.book.progress! /
-                                          widget.book.pages
-                                      : (widget.book.progress! /
-                                          int.parse(
-                                              widget.book.chapters.toString())),
+                                  percent: book.howToRead == "Páginas"
+                                      ? book.progress! / book.pages
+                                      : (book.progress! /
+                                          int.parse(book.chapters.toString())),
                                   width:
                                       MediaQuery.sizeOf(context).width * 0.55,
                                   lineHeight: 12.0,
@@ -318,10 +318,10 @@ class _BookSummaryState extends State<BookSummary> {
 class ResetAlertDialog extends StatelessWidget {
   const ResetAlertDialog({
     super.key,
-    required this.widget,
+    required this.book,
   });
 
-  final BookSummary widget;
+  final Book book;
 
   @override
   Widget build(BuildContext context) {
@@ -340,9 +340,9 @@ class ResetAlertDialog extends StatelessWidget {
         TextButton(
           child: const Text("Sim"),
           onPressed: () {
-            widget.book.status = "toRead";
-            widget.book.progress = 0;
-            SQLHelper.updateItem(widget.book.id, widget.book);
+            book.status = "toRead";
+            book.progress = 0;
+            SQLHelper.updateItem(book.id, book);
             context.safePop();
           },
         ),
@@ -372,8 +372,8 @@ class TextReadStatusButton extends StatelessWidget {
   }
 }
 
-class InitalProgress extends StatelessWidget {
-  const InitalProgress({
+class ModalContainer extends StatelessWidget {
+  const ModalContainer({
     super.key,
     required this.book,
   });
@@ -396,7 +396,7 @@ class InitalProgress extends StatelessWidget {
           ? FormProgress(
               book: book,
             )
-          : StartReadingProgress(
+          : StartReading(
               book: book,
             ),
     );
@@ -615,8 +615,8 @@ class _FormProgressState extends State<FormProgress> {
   }
 }
 
-class StartReadingProgress extends StatefulWidget {
-  StartReadingProgress({
+class StartReading extends StatefulWidget {
+  StartReading({
     super.key,
     required this.book,
   });
@@ -624,10 +624,10 @@ class StartReadingProgress extends StatefulWidget {
   final Book book;
 
   @override
-  State<StartReadingProgress> createState() => StartReadingProgressState();
+  State<StartReading> createState() => StartReadingState();
 }
 
-class StartReadingProgressState extends State<StartReadingProgress> {
+class StartReadingState extends State<StartReading> {
   TextEditingController _goal = TextEditingController();
   TextEditingController _dateController = TextEditingController();
 
