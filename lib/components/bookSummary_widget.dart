@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:book_tracker/database/sql_helper.dart';
 import 'package:book_tracker/pages/book_info/book_info_widget.dart';
 
@@ -10,7 +8,7 @@ import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/percent_indicator.dart';
-import 'package:provider/provider.dart';
+
 import 'bookSummary_model.dart';
 export 'bookSummary_model.dart';
 
@@ -20,7 +18,6 @@ class BookSummary extends StatefulWidget {
 
   @override
   _BookSummaryState createState() => _BookSummaryState();
-
 }
 
 class _BookSummaryState extends State<BookSummary> {
@@ -107,13 +104,15 @@ class _BookSummaryState extends State<BookSummary> {
   @override
   void dispose() {
     _model.maybeDispose();
-
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-
+    if (widget.book.status == "toRead") {
+      widget.book.startReading = "";
+      widget.book.endReading = "";
+    }
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(20.0, 20.0, 20.0, 20.0),
       child: Container(
@@ -216,7 +215,8 @@ class _BookSummaryState extends State<BookSummary> {
                                   mainAxisSize: MainAxisSize.max,
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(showData(widget.book.startReading),
+                                    Text(
+                                      showData(widget.book.startReading),
                                       style: FlutterFlowTheme.of(context)
                                           .bodyMedium
                                           .override(
@@ -247,9 +247,13 @@ class _BookSummaryState extends State<BookSummary> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  widget.book.progress.toString() +
-                                      " páginas de " +
-                                      widget.book.pages.toString(),
+                                  widget.book.howToRead == "Páginas"
+                                      ? widget.book.progress.toString() +
+                                          " páginas de " +
+                                          widget.book.pages.toString()
+                                      : widget.book.progress.toString() +
+                                          " capítulos de " +
+                                          widget.book.chapters.toString(),
                                   style: FlutterFlowTheme.of(context)
                                       .bodyMedium
                                       .override(
@@ -258,8 +262,12 @@ class _BookSummaryState extends State<BookSummary> {
                                       ),
                                 ),
                                 LinearPercentIndicator(
-                                  percent:
-                                      widget.book.progress! / widget.book.pages,
+                                  percent: widget.book.howToRead == "Páginas"
+                                      ? widget.book.progress! /
+                                          widget.book.pages
+                                      : (widget.book.progress! /
+                                          int.parse(
+                                              widget.book.chapters.toString())),
                                   width:
                                       MediaQuery.sizeOf(context).width * 0.55,
                                   lineHeight: 12.0,
@@ -419,12 +427,25 @@ class _FormProgressState extends State<FormProgress> {
     var intGoal = int.tryParse(showData(book.goal));
     int progressAdded = intProgress! + intGoal!;
     _progressController.text = progressAdded.toString();
-    _totalController.text = book.pages.toString();
+    if (book.howToRead == "Páginas") {
+      _totalController.text = book.pages.toString();
+    } else if (book.howToRead == "Capitulos") {
+      _totalController.text = book.chapters.toString();
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     Book book = widget.book;
+
+    int howManyDays = ((int.parse(_totalController.text) -
+                int.parse(_progressController.text)) /
+            int.parse(showData(book.goal)))
+        .ceil();
+
+    String prediction = DateFormat("dd/MM/yyyy")
+        .format(DateTime.now().add(Duration(days: howManyDays)));
+
     double percentage =
         int.parse(_progressController.text) / int.parse(_totalController.text);
     if (percentage > 1) {
@@ -510,6 +531,16 @@ class _FormProgressState extends State<FormProgress> {
             padding: EdgeInsets.zero,
           ),
         ),
+        Row(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 6),
+              child: Text(
+                "Previsão de fim: $prediction",
+              ),
+            ),
+          ],
+        ),
         const SizedBox(
           height: 20,
         ),
@@ -535,11 +566,14 @@ class _FormProgressState extends State<FormProgress> {
 
                 print("Progresso do livro ${book.title} : ${book.progress}");
 
+                book.endReading = prediction;
                 SQLHelper.updateItem(book.id, book);
                 context.safePop();
 
-                if (book.progress! >= book.pages) {
+                if (book.progress! >= total) {
                   book.status = "read";
+                  book.endReading =
+                      DateFormat("dd/MM/yyyy").format(DateTime.now());
 
                   await showDialog(
                     context: context,
@@ -594,14 +628,15 @@ class StartReadingProgress extends StatefulWidget {
 }
 
 class StartReadingProgressState extends State<StartReadingProgress> {
-  final TextEditingController _progressController = TextEditingController();
-  final TextEditingController _totalController = TextEditingController();
-  String _howToRead = "Páginas";
-  String _howEnd = "daily";
   TextEditingController _goal = TextEditingController();
   TextEditingController _dateController = TextEditingController();
+
+  String _howToRead = "Páginas";
+  String _howEnd = "daily";
   int howManyDays = 0;
   String prediction = DateFormat("dd/MM/yyyy").format(DateTime.now());
+
+  final _formKey = GlobalKey<FormState>();
 
   bool valueValidator(String? value) {
     if (value != null && value.isEmpty) {
@@ -609,8 +644,6 @@ class StartReadingProgressState extends State<StartReadingProgress> {
     }
     return false;
   }
-
-  final _formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
@@ -622,7 +655,7 @@ class StartReadingProgressState extends State<StartReadingProgress> {
     Book book = widget.book;
 
     return Padding(
-      padding: const EdgeInsets.all(6.0),
+      padding: const EdgeInsets.all(5.5),
       child: Form(
         key: _formKey,
         child: Column(
@@ -766,8 +799,14 @@ class StartReadingProgressState extends State<StartReadingProgress> {
                           if (_goal.text == "" || _goal.text == "0") {
                             howManyDays = 0;
                           } else {
-                            howManyDays =
-                                (book.pages / int.parse(_goal.text)).ceil();
+                            if (_howToRead == "Páginas") {
+                              howManyDays =
+                                  (book.pages / int.parse(_goal.text)).ceil();
+                            } else if (_howToRead == "Capitulos") {
+                              howManyDays =
+                                  (book.chapters! / int.parse(_goal.text))
+                                      .ceil();
+                            }
                           }
 
                           if (int.parse(_goal.text) > book.pages) {
@@ -808,8 +847,16 @@ class StartReadingProgressState extends State<StartReadingProgress> {
                               1;
 
                           print("Quantos dias: $howManyDays");
-                          _goal.text =
-                              (book.pages / howManyDays).ceil().toString();
+
+                          if (_howToRead == "Páginas") {
+                            _goal.text =
+                                (book.pages / howManyDays).ceil().toString();
+                          } else if (_howToRead == "Capitulos") {
+                            _goal.text = (book.chapters! / howManyDays)
+                                .ceil()
+                                .toString();
+                          }
+
                           print("Goal: ${(book.pages / howManyDays).ceil()}");
                           prediction = DateFormat("dd/MM/yyyy").format(
                               DateTime.now().add(Duration(days: howManyDays)));
@@ -849,6 +896,9 @@ class StartReadingProgressState extends State<StartReadingProgress> {
                     book.howToRead = _howToRead;
                     book.goal = _goal.value.text;
                     book.status = "reading";
+                    book.startReading =
+                        DateFormat("dd/MM/yyyy").format(DateTime.now());
+                    book.endReading = prediction;
                     print(
                         "Como ler: ${book.howToRead}\nQuanto ler: ${book.goal}");
                     SQLHelper.updateItem(book.id, book);
