@@ -249,13 +249,24 @@ class _BookSummaryState extends State<BookSummary> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  book.howToRead == "Páginas"
+                                  book.progress.toString() +
+                                      " ${book.howToRead.toString().toLowerCase().substring(0, book.howToRead.toString().length - 1)}" +
+                                      (book.progress! > 1 ? "s" : "") +
+                                      " de " +
+                                      (book.howToRead == "Páginas"
+                                          ? book.pages.toString()
+                                          : book.chapters.toString()),
+                                  // eu amo fazer código espaghetti
+
+                                  /*
+                                  * book.howToRead == "Páginas"
                                       ? book.progress.toString() +
                                           " páginas de " +
                                           book.pages.toString()
                                       : book.progress.toString() +
                                           " capítulos de " +
                                           book.chapters.toString(),
+                                    */
                                   style: FlutterFlowTheme.of(context)
                                       .bodyMedium
                                       .override(
