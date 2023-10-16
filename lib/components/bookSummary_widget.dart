@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:book_tracker/database/sql_helper.dart';
 import 'package:book_tracker/pages/book_info/book_info_widget.dart';
 
@@ -80,7 +82,7 @@ class _BookSummaryState extends State<BookSummary> {
 
   returnImage() {
     Book book = widget.book;
-    if (book.image != null) {
+    if (book.image!.contains("http")) {
       return Image.network(
         "${book.image}",
         width: 100.0,
@@ -88,13 +90,20 @@ class _BookSummaryState extends State<BookSummary> {
         fit: BoxFit.cover,
       );
     } else {
+      return Image.memory(
+        base64Decode(showData(book.image)),
+        width: 100.0,
+        height: 125.0,
+        fit: BoxFit.cover,
+      );
+    } /*else {
       return Image.network(
         'https://www.lojadobolseiro.com.br/uploads/images/2020/02/76-livro-o-hobbit-capa-smaug-j-r-r-tolkien-1582738560.jpg',
         width: 100.0,
         height: 125.0,
         fit: BoxFit.cover,
       );
-    }
+    }*/
   }
 
   @override

@@ -1,4 +1,8 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:book_tracker/database/sql_helper.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../../classes/books.dart';
 import '../../classes/show_data.dart';
@@ -37,14 +41,6 @@ class _FormBooksWidgetState extends State<FormBooksWidget> {
     }
   }
 
-  validateTracker(tracker) {
-    if (tracker == "Páginas" || tracker == null || tracker == "") {
-      return "Páginas";
-    } else if (tracker == "Capitulos") {
-      return "Capitulos";
-    }
-  }
-
   @override
   void initState() {
     super.initState();
@@ -54,7 +50,6 @@ class _FormBooksWidgetState extends State<FormBooksWidget> {
     _model.pagesFieldController ??= TextEditingController();
     _model.chapFieldController ??= TextEditingController();
     _model.descFieldController ??= TextEditingController();
-    _model.trackerGoalController ??= TextEditingController();
     _model.tagFieldController ??= TextEditingController();
     _model.publisherFieldController ??= TextEditingController();
     _model.isbn10FieldController ??= TextEditingController();
@@ -86,7 +81,6 @@ class _FormBooksWidgetState extends State<FormBooksWidget> {
     }
     _model.chapFieldController.text = showData(book.chapters);
     _model.descFieldController.text = showData(book.synopsis);
-    _model.trackerGoalController.text = showData(book.goal);
     _model.tagFieldController.text = showData(book.tags);
     _model.publisherFieldController.text = showData(book.publisher);
     _model.isbn10FieldController.text = showData(book.isbn10);
@@ -141,8 +135,6 @@ class _FormBooksWidgetState extends State<FormBooksWidget> {
                 ),
                 onPressed: () {
                   print('IconButton pressed ...');
-
-
                 },
               ),
             ),
@@ -164,113 +156,176 @@ class _FormBooksWidgetState extends State<FormBooksWidget> {
                     padding:
                         EdgeInsetsDirectional.fromSTEB(16.0, 16.0, 16.0, 16.0),
                     child: SingleChildScrollView(
-                      primary: false,
+                      primary: true,
                       child: Column(
                         mainAxisSize: MainAxisSize.max,
                         children: [
-                          Padding(
-                            padding: EdgeInsetsDirectional.fromSTEB(
-                                8.0, 0.0, 8.0, 0.0),
-                            child: TextFormField(
-                              controller: _model.titleFieldController,
-                              autofocus: true,
-                              textCapitalization: TextCapitalization.sentences,
-                              textInputAction: TextInputAction.next,
-                              obscureText: false,
-                              decoration: InputDecoration(
-                                labelText: FFLocalizations.of(context).getText(
-                                  '5ier2gr4' /* Titulo do livro */,
-                                ),
-                                labelStyle:
-                                    FlutterFlowTheme.of(context).labelMedium,
-                                hintStyle:
-                                    FlutterFlowTheme.of(context).labelMedium,
-                                enabledBorder: UnderlineInputBorder(
-                                  borderSide: BorderSide(
-                                    color:
-                                        FlutterFlowTheme.of(context).alternate,
-                                    width: 2.0,
-                                  ),
-                                  borderRadius: BorderRadius.circular(8.0),
-                                ),
-                                focusedBorder: UnderlineInputBorder(
-                                  borderSide: BorderSide(
-                                    color: FlutterFlowTheme.of(context).primary,
-                                    width: 2.0,
-                                  ),
-                                  borderRadius: BorderRadius.circular(8.0),
-                                ),
-                                errorBorder: UnderlineInputBorder(
-                                  borderSide: BorderSide(
-                                    color: FlutterFlowTheme.of(context).error,
-                                    width: 2.0,
-                                  ),
-                                  borderRadius: BorderRadius.circular(8.0),
-                                ),
-                                focusedErrorBorder: UnderlineInputBorder(
-                                  borderSide: BorderSide(
-                                    color: FlutterFlowTheme.of(context).error,
-                                    width: 2.0,
-                                  ),
-                                  borderRadius: BorderRadius.circular(8.0),
+                          Row(
+                            mainAxisSize: MainAxisSize.max,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              CapeImage(book: book),
+                              Expanded(
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.max,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    Padding(
+                                      padding: EdgeInsetsDirectional.fromSTEB(
+                                          8.0, 0.0, 8.0, 0.0),
+                                      child: Container(
+                                        width:
+                                            MediaQuery.sizeOf(context).width *
+                                                0.6,
+                                        child: TextFormField(
+                                          controller:
+                                              _model.titleFieldController,
+                                          autofocus: !edit,
+                                          textCapitalization:
+                                              TextCapitalization.sentences,
+                                          textInputAction: TextInputAction.next,
+                                          decoration: InputDecoration(
+                                            labelText:
+                                                FFLocalizations.of(context)
+                                                    .getText(
+                                              '5ier2gr4' /* Titulo do livro */,
+                                            ),
+                                            labelStyle:
+                                                FlutterFlowTheme.of(context)
+                                                    .labelMedium,
+                                            hintStyle:
+                                                FlutterFlowTheme.of(context)
+                                                    .labelMedium,
+                                            enabledBorder: UnderlineInputBorder(
+                                              borderSide: BorderSide(
+                                                color:
+                                                    FlutterFlowTheme.of(context)
+                                                        .alternate,
+                                                width: 2.0,
+                                              ),
+                                              borderRadius:
+                                                  BorderRadius.circular(8.0),
+                                            ),
+                                            focusedBorder: UnderlineInputBorder(
+                                              borderSide: BorderSide(
+                                                color:
+                                                    FlutterFlowTheme.of(context)
+                                                        .primary,
+                                                width: 2.0,
+                                              ),
+                                              borderRadius:
+                                                  BorderRadius.circular(8.0),
+                                            ),
+                                            errorBorder: UnderlineInputBorder(
+                                              borderSide: BorderSide(
+                                                color:
+                                                    FlutterFlowTheme.of(context)
+                                                        .error,
+                                                width: 2.0,
+                                              ),
+                                              borderRadius:
+                                                  BorderRadius.circular(8.0),
+                                            ),
+                                            focusedErrorBorder:
+                                                UnderlineInputBorder(
+                                              borderSide: BorderSide(
+                                                color:
+                                                    FlutterFlowTheme.of(context)
+                                                        .error,
+                                                width: 2.0,
+                                              ),
+                                              borderRadius:
+                                                  BorderRadius.circular(8.0),
+                                            ),
+                                          ),
+                                          style: FlutterFlowTheme.of(context)
+                                              .bodyMedium,
+                                          validator: _model
+                                              .titleFieldControllerValidator
+                                              .asValidator(context),
+                                        ),
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: EdgeInsetsDirectional.fromSTEB(
+                                          8.0, 0.0, 8.0, 0.0),
+                                      child: Container(
+                                        width:
+                                            MediaQuery.sizeOf(context).width *
+                                                0.6,
+                                        child: TextFormField(
+                                          controller:
+                                              _model.authorFieldController,
+                                          textCapitalization:
+                                              TextCapitalization.words,
+                                          textInputAction: TextInputAction.next,
+                                          decoration: InputDecoration(
+                                            labelText:
+                                                FFLocalizations.of(context)
+                                                    .getText(
+                                              'i544xhsx' /* Nome do autor */,
+                                            ),
+                                            labelStyle:
+                                                FlutterFlowTheme.of(context)
+                                                    .labelMedium,
+                                            hintStyle:
+                                                FlutterFlowTheme.of(context)
+                                                    .labelMedium,
+                                            enabledBorder: UnderlineInputBorder(
+                                              borderSide: BorderSide(
+                                                color:
+                                                    FlutterFlowTheme.of(context)
+                                                        .alternate,
+                                                width: 2.0,
+                                              ),
+                                              borderRadius:
+                                                  BorderRadius.circular(8.0),
+                                            ),
+                                            focusedBorder: UnderlineInputBorder(
+                                              borderSide: BorderSide(
+                                                color:
+                                                    FlutterFlowTheme.of(context)
+                                                        .primary,
+                                                width: 2.0,
+                                              ),
+                                              borderRadius:
+                                                  BorderRadius.circular(8.0),
+                                            ),
+                                            errorBorder: UnderlineInputBorder(
+                                              borderSide: BorderSide(
+                                                color:
+                                                    FlutterFlowTheme.of(context)
+                                                        .error,
+                                                width: 2.0,
+                                              ),
+                                              borderRadius:
+                                                  BorderRadius.circular(8.0),
+                                            ),
+                                            focusedErrorBorder:
+                                                UnderlineInputBorder(
+                                              borderSide: BorderSide(
+                                                color:
+                                                    FlutterFlowTheme.of(context)
+                                                        .error,
+                                                width: 2.0,
+                                              ),
+                                              borderRadius:
+                                                  BorderRadius.circular(8.0),
+                                            ),
+                                          ),
+                                          style: FlutterFlowTheme.of(context)
+                                              .bodyMedium,
+                                          validator: _model
+                                              .authorFieldControllerValidator
+                                              .asValidator(context),
+                                        ),
+                                      ),
+                                    ),
+                                  ].divide(SizedBox(height: 2.0)),
                                 ),
                               ),
-                              style: FlutterFlowTheme.of(context).bodyMedium,
-                              validator: _model.titleFieldControllerValidator
-                                  .asValidator(context),
-                            ),
-                          ),
-                          Padding(
-                            padding: EdgeInsetsDirectional.fromSTEB(
-                                8.0, 0.0, 8.0, 0.0),
-                            child: TextFormField(
-                              controller: _model.authorFieldController,
-                              autofocus: true,
-                              textCapitalization: TextCapitalization.words,
-                              textInputAction: TextInputAction.next,
-                              obscureText: false,
-                              decoration: InputDecoration(
-                                labelText: FFLocalizations.of(context).getText(
-                                  'i544xhsx' /* Nome do autor */,
-                                ),
-                                labelStyle:
-                                    FlutterFlowTheme.of(context).labelMedium,
-                                hintStyle:
-                                    FlutterFlowTheme.of(context).labelMedium,
-                                enabledBorder: UnderlineInputBorder(
-                                  borderSide: BorderSide(
-                                    color:
-                                        FlutterFlowTheme.of(context).alternate,
-                                    width: 2.0,
-                                  ),
-                                  borderRadius: BorderRadius.circular(8.0),
-                                ),
-                                focusedBorder: UnderlineInputBorder(
-                                  borderSide: BorderSide(
-                                    color: FlutterFlowTheme.of(context).primary,
-                                    width: 2.0,
-                                  ),
-                                  borderRadius: BorderRadius.circular(8.0),
-                                ),
-                                errorBorder: UnderlineInputBorder(
-                                  borderSide: BorderSide(
-                                    color: FlutterFlowTheme.of(context).error,
-                                    width: 2.0,
-                                  ),
-                                  borderRadius: BorderRadius.circular(8.0),
-                                ),
-                                focusedErrorBorder: UnderlineInputBorder(
-                                  borderSide: BorderSide(
-                                    color: FlutterFlowTheme.of(context).error,
-                                    width: 2.0,
-                                  ),
-                                  borderRadius: BorderRadius.circular(8.0),
-                                ),
-                              ),
-                              style: FlutterFlowTheme.of(context).bodyMedium,
-                              validator: _model.authorFieldControllerValidator
-                                  .asValidator(context),
-                            ),
+                            ],
                           ),
                           Row(
                             mainAxisSize: MainAxisSize.max,
@@ -281,10 +336,8 @@ class _FormBooksWidgetState extends State<FormBooksWidget> {
                                       8.0, 0.0, 8.0, 0.0),
                                   child: TextFormField(
                                     controller: _model.pagesFieldController,
-                                    autofocus: true,
                                     textCapitalization: TextCapitalization.none,
                                     textInputAction: TextInputAction.next,
-                                    obscureText: false,
                                     decoration: InputDecoration(
                                       labelText:
                                           FFLocalizations.of(context).getText(
@@ -350,10 +403,8 @@ class _FormBooksWidgetState extends State<FormBooksWidget> {
                                       8.0, 0.0, 8.0, 0.0),
                                   child: TextFormField(
                                     controller: _model.chapFieldController,
-                                    autofocus: true,
                                     textCapitalization: TextCapitalization.none,
                                     textInputAction: TextInputAction.next,
-                                    obscureText: false,
                                     decoration: InputDecoration(
                                       labelText:
                                           FFLocalizations.of(context).getText(
@@ -424,10 +475,8 @@ class _FormBooksWidgetState extends State<FormBooksWidget> {
                                 8.0, 0.0, 8.0, 0.0),
                             child: TextFormField(
                               controller: _model.descFieldController,
-                              autofocus: true,
                               textCapitalization: TextCapitalization.sentences,
                               textInputAction: TextInputAction.next,
-                              obscureText: false,
                               decoration: InputDecoration(
                                 labelText: FFLocalizations.of(context).getText(
                                   '7li3n76c' /* Descrição/Sinopse */,
@@ -467,66 +516,15 @@ class _FormBooksWidgetState extends State<FormBooksWidget> {
                                 ),
                               ),
                               style: FlutterFlowTheme.of(context).bodyMedium,
+                              maxLines: null,
                               keyboardType: TextInputType.multiline,
                               validator: _model.descFieldControllerValidator
                                   .asValidator(context),
                             ),
                           ),
-
-
-                          /*FlutterFlowDropDown<String>(
-                            controller: _model.dropDownValueController ??=
-                                FormFieldController<String>(
-                              _model.dropDownValue ??=
-                                  FFLocalizations.of(context).getText(
-                                'jwjk7mly' *//* Adicionar a uma lista *//*,
-                              ),
-                            ),
-                            options: [
-                              FFLocalizations.of(context).getText(
-                                'ge47vx0f' *//* Adicionar a uma lista *//*,
-                              ),
-                              FFLocalizations.of(context).getText(
-                                'd3gd18l7' *//* 5 *//*,
-                              ),
-                              FFLocalizations.of(context).getText(
-                                'ydueeq79' *//* 10 *//*,
-                              ),
-                              FFLocalizations.of(context).getText(
-                                'u0x7799m' *//* 15 *//*,
-                              ),
-                              FFLocalizations.of(context).getText(
-                                'gv1fqhjt' *//* 20 *//*,
-                              )
-                            ],
-                            onChanged: (val) =>
-                                setState(() => _model.dropDownValue = val),
-                            width: double.infinity,
-                            height: 50.0,
-                            textStyle: FlutterFlowTheme.of(context).bodyMedium,
-                            hintText: FFLocalizations.of(context).getText(
-                              'uwd4g9x6' *//* Adicionar a uma lista *//*,
-                            ),
-                            icon: Icon(
-                              Icons.keyboard_arrow_down_rounded,
-                              color: FlutterFlowTheme.of(context).secondaryText,
-                              size: 24.0,
-                            ),
-                            elevation: 2.0,
-                            borderColor: Colors.transparent,
-                            borderWidth: 2.0,
-                            borderRadius: 8.0,
-                            margin: EdgeInsetsDirectional.fromSTEB(
-                                8.0, 4.0, 8.0, 4.0),
-                            hidesUnderline: true,
-                            isSearchable: false,
-                            isMultiSelect: false,
-                          ),*/
-
-
                           Padding(
                             padding: EdgeInsetsDirectional.fromSTEB(
-                                0.0, 50.0, 0.0, 0.0),
+                                0.0, 24.0, 0.0, 0.0),
                             child: Container(
                               width: double.infinity,
                               color: Color(0x00000000),
@@ -600,12 +598,10 @@ class _FormBooksWidgetState extends State<FormBooksWidget> {
                                           child: TextFormField(
                                             controller:
                                                 _model.tagFieldController,
-                                            autofocus: true,
                                             textCapitalization:
                                                 TextCapitalization.sentences,
                                             textInputAction:
                                                 TextInputAction.next,
-                                            obscureText: false,
                                             decoration: InputDecoration(
                                               labelText:
                                                   FFLocalizations.of(context)
@@ -665,7 +661,7 @@ class _FormBooksWidgetState extends State<FormBooksWidget> {
                                             style: FlutterFlowTheme.of(context)
                                                 .bodyMedium,
                                             validator: _model
-                                                .tagFIeldControllerValidator
+                                                .tagFieldControllerValidator
                                                 .asValidator(context),
                                           ),
                                         ),
@@ -676,12 +672,10 @@ class _FormBooksWidgetState extends State<FormBooksWidget> {
                                           child: TextFormField(
                                             controller:
                                                 _model.publisherFieldController,
-                                            autofocus: true,
                                             textCapitalization:
                                                 TextCapitalization.sentences,
                                             textInputAction:
                                                 TextInputAction.next,
-                                            obscureText: false,
                                             decoration: InputDecoration(
                                               labelText:
                                                   FFLocalizations.of(context)
@@ -752,12 +746,10 @@ class _FormBooksWidgetState extends State<FormBooksWidget> {
                                           child: TextFormField(
                                             controller:
                                                 _model.isbn10FieldController,
-                                            autofocus: true,
                                             textCapitalization:
                                                 TextCapitalization.none,
                                             textInputAction:
                                                 TextInputAction.next,
-                                            obscureText: false,
                                             decoration: InputDecoration(
                                               labelText:
                                                   FFLocalizations.of(context)
@@ -828,10 +820,8 @@ class _FormBooksWidgetState extends State<FormBooksWidget> {
                                           child: TextFormField(
                                             controller:
                                                 _model.isbn13FieldController,
-                                            autofocus: true,
                                             textInputAction:
                                                 TextInputAction.next,
-                                            obscureText: false,
                                             decoration: InputDecoration(
                                               labelText:
                                                   FFLocalizations.of(context)
@@ -902,10 +892,8 @@ class _FormBooksWidgetState extends State<FormBooksWidget> {
                                           child: TextFormField(
                                             controller:
                                                 _model.editionFieldController,
-                                            autofocus: true,
                                             textInputAction:
                                                 TextInputAction.next,
-                                            obscureText: false,
                                             decoration: InputDecoration(
                                               labelText:
                                                   FFLocalizations.of(context)
@@ -976,10 +964,8 @@ class _FormBooksWidgetState extends State<FormBooksWidget> {
                                           child: TextFormField(
                                             controller:
                                                 _model.langFieldController,
-                                            autofocus: true,
                                             textInputAction:
                                                 TextInputAction.next,
-                                            obscureText: false,
                                             decoration: InputDecoration(
                                               labelText:
                                                   FFLocalizations.of(context)
@@ -1050,12 +1036,10 @@ class _FormBooksWidgetState extends State<FormBooksWidget> {
                                           child: TextFormField(
                                             controller:
                                                 _model.dateFieldController,
-                                            autofocus: true,
                                             textCapitalization:
                                                 TextCapitalization.none,
                                             textInputAction:
                                                 TextInputAction.done,
-                                            obscureText: false,
                                             decoration: InputDecoration(
                                               labelText:
                                                   FFLocalizations.of(context)
@@ -1124,7 +1108,9 @@ class _FormBooksWidgetState extends State<FormBooksWidget> {
                                             ],
                                           ),
                                         ),
-                                      ],
+                                      ]
+                                          .divide(SizedBox(height: 2.0))
+                                          .around(SizedBox(height: 2.0)),
                                     ),
                                   ),
                                   theme: ExpandableThemeData(
@@ -1151,15 +1137,17 @@ class _FormBooksWidgetState extends State<FormBooksWidget> {
                                       _model.authorFieldController.text;
                                   String pages =
                                       _model.pagesFieldController.text;
+
+                                  if (title == "" ||
+                                      author == "" ||
+                                      pages == "") {
+                                    return;
+                                  }
+
                                   String chapters =
                                       _model.chapFieldController.text;
                                   String synopsis =
                                       _model.descFieldController.text;
-                                  String goal =
-                                      _model.trackerGoalController.text;
-                                  if (goal.isEmpty) {
-                                    goal = "1";
-                                  }
                                   String tags = _model.tagFieldController.text;
                                   String publisher =
                                       _model.publisherFieldController.text;
@@ -1174,15 +1162,8 @@ class _FormBooksWidgetState extends State<FormBooksWidget> {
                                       _model.dateFieldController.text;
                                   String type = _model.typeRadioValueController
                                       .toString();
-                                  String howToRead = _model.trackerRadioValueController.toString();
 
-                                  if (howToRead.contains("Capitulos")) {
-                                    howToRead = "Capitulos";
-                                  } else if (howToRead.contains("Páginas")) {
-                                    howToRead = "Páginas";
-                                  } else {
-                                    howToRead = "Páginas";
-                                  }
+                                  String howToRead = "Páginas";
 
                                   if (type.contains("Digital")) {
                                     type = "Digital";
@@ -1190,6 +1171,11 @@ class _FormBooksWidgetState extends State<FormBooksWidget> {
                                     type = "Físico";
                                   } else {
                                     type = "Físico";
+                                  }
+
+                                  if (book.image == "" || book.image == null) {
+                                    book.image =
+                                        "https://www.lojadobolseiro.com.br/uploads/images/2020/02/76-livro-o-hobbit-capa-smaug-j-r-r-tolkien-1582738560.jpg";
                                   }
 
                                   Book bookSave = Book(
@@ -1200,14 +1186,11 @@ class _FormBooksWidgetState extends State<FormBooksWidget> {
                                     chapters: int.tryParse(chapters) ?? 0,
                                     synopsis: synopsis,
                                     type: type,
-                                    howToRead: howToRead,
                                     startReading: DateFormat("dd/MM/yyyy")
                                         .format(DateTime.now()),
                                     endReading: DateFormat("dd/MM/yyyy").format(
                                         DateTime.now().add(Duration(days: 31))),
-                                    goal: goal,
-                                    image:
-                                        "https://www.lojadobolseiro.com.br/uploads/images/2020/02/76-livro-o-hobbit-capa-smaug-j-r-r-tolkien-1582738560.jpg",
+                                    image: book.image,
                                     tags: tags.replaceAll(", ", '-'),
                                     publisher: publisher,
                                     isbn10: int.tryParse(isbn10),
@@ -1216,10 +1199,11 @@ class _FormBooksWidgetState extends State<FormBooksWidget> {
                                     language: lang,
                                     publicationDate: publicationDate,
                                     status: "toRead",
+                                    howToRead: howToRead,
                                   );
                                   setState(() {
                                     if (edit) {
-                                      if(book.status != null) {
+                                      if (book.status != null) {
                                         bookSave.status = book.status;
                                         bookSave.progress = book.progress;
                                       }
@@ -1267,5 +1251,64 @@ class _FormBooksWidgetState extends State<FormBooksWidget> {
         ),
       ),
     );
+  }
+}
+
+class CapeImage extends StatefulWidget {
+  const CapeImage({
+    super.key,
+    required this.book,
+  });
+
+  final Book book;
+
+  @override
+  State<CapeImage> createState() => _CapeImageState();
+}
+
+class _CapeImageState extends State<CapeImage> {
+  late File _image;
+  bool imageExists = false;
+
+  @override
+  Widget build(BuildContext context) {
+    Book book = widget.book;
+    return InkWell(
+      child: Container(
+        width: 125.0,
+        height: 200.0,
+        decoration: BoxDecoration(
+          color: FlutterFlowTheme.of(context).secondaryBackground,
+        ),
+        child: imageExists
+            ? Image.file(
+                _image,
+                width: 100.0,
+                height: 125.0,
+                fit: BoxFit.cover,
+              )
+            : Image.network(
+                "https://www.lojadobolseiro.com.br/uploads/images/2020/02/76-livro-o-hobbit-capa-smaug-j-r-r-tolkien-1582738560.jpg",
+                width: 100.0,
+                height: 125.0,
+                fit: BoxFit.cover,
+              ),
+      ),
+      onTap: _pickImage,
+    );
+  }
+
+  Future<void> _pickImage() async {
+    ImagePicker imagePicker = ImagePicker();
+    XFile? image = await imagePicker.pickImage(source: ImageSource.gallery);
+
+    if (image == null) return;
+
+    setState(() {
+      File imageFile = File(image.path);
+      _image = imageFile;
+      imageExists = true;
+      widget.book.image = base64Encode(imageFile.readAsBytesSync());
+    });
   }
 }

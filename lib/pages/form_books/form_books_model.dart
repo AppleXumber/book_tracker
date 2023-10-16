@@ -1,10 +1,10 @@
-import '/flutter_flow/flutter_flow_drop_down.dart';
 import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_radio_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
 import '/flutter_flow/form_field_controller.dart';
+import 'form_books_widget.dart' show FormBooksWidget;
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -46,33 +46,37 @@ class FormBooksModel extends FlutterFlowModel {
       );
     }
 
+    if (val.length < 1) {
+      return 'Requires at least 1 characters.';
+    }
+
     return null;
   }
 
   // State field(s) for pagesField widget.
   TextEditingController? pagesFieldController;
   String? Function(BuildContext, String?)? pagesFieldControllerValidator;
+  String? _pagesFieldControllerValidator(BuildContext context, String? val) {
+    if (val == null || val.isEmpty) {
+      return FFLocalizations.of(context).getText(
+        'kjtwvfll' /* Insira uma quantidade de págin... */,
+      );
+    }
+
+    return null;
+  }
+
   // State field(s) for chapField widget.
   TextEditingController? chapFieldController;
   String? Function(BuildContext, String?)? chapFieldControllerValidator;
   // State field(s) for descField widget.
   TextEditingController? descFieldController;
   String? Function(BuildContext, String?)? descFieldControllerValidator;
-  // State field(s) for trackerRadio widget.
-  FormFieldController<String>? trackerRadioValueController;
-  // State field(s) for goalRadio widget.
-  FormFieldController<String>? goalRadioValueController;
-  // State field(s) for trackerGoal widget.
-  TextEditingController? trackerGoalController;
-  String? Function(BuildContext, String?)? trackerGoalControllerValidator;
-  // State field(s) for DropDown widget.
-  String? dropDownValue;
-  FormFieldController<String>? dropDownValueController;
   // State field(s) for typeRadio widget.
   FormFieldController<String>? typeRadioValueController;
   // State field(s) for tagFIeld widget.
   TextEditingController? tagFieldController;
-  String? Function(BuildContext, String?)? tagFIeldControllerValidator;
+  String? Function(BuildContext, String?)? tagFieldControllerValidator;
   // State field(s) for publisherField widget.
   TextEditingController? publisherFieldController;
   String? Function(BuildContext, String?)? publisherFieldControllerValidator;
@@ -98,6 +102,7 @@ class FormBooksModel extends FlutterFlowModel {
   void initState(BuildContext context) {
     titleFieldControllerValidator = _titleFieldControllerValidator;
     authorFieldControllerValidator = _authorFieldControllerValidator;
+    pagesFieldControllerValidator = _pagesFieldControllerValidator;
   }
 
   void dispose() {
@@ -107,7 +112,6 @@ class FormBooksModel extends FlutterFlowModel {
     pagesFieldController?.dispose();
     chapFieldController?.dispose();
     descFieldController?.dispose();
-    trackerGoalController?.dispose();
     tagFieldController?.dispose();
     publisherFieldController?.dispose();
     isbn10FieldController?.dispose();
@@ -121,7 +125,5 @@ class FormBooksModel extends FlutterFlowModel {
 
   /// Additional helper methods are added here.
 
-  String? get trackerRadioValue => trackerRadioValueController?.value;
-  String? get goalRadioValue => goalRadioValueController?.value;
   String? get typeRadioValue => typeRadioValueController?.value;
 }

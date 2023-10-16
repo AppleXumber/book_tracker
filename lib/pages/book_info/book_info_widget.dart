@@ -1,3 +1,5 @@
+import 'dart:convert';
+import 'dart:io';
 import "dart:math";
 import 'package:book_tracker/database/sql_helper.dart';
 
@@ -53,6 +55,7 @@ class _BookInfoWidgetState extends State<BookInfoWidget> {
   @override
   Widget build(BuildContext context) {
     context.watch<FFAppState>();
+    Book book = widget.book;
 
     return GestureDetector(
       onTap: () => FocusScope.of(context).requestFocus(_model.unfocusNode),
@@ -147,7 +150,6 @@ class _BookInfoWidgetState extends State<BookInfoWidget> {
                     }));
               },
             ),
-
           ],
           centerTitle: false,
           elevation: 2.0,
@@ -190,10 +192,13 @@ class _BookInfoWidgetState extends State<BookInfoWidget> {
                                       PageTransition(
                                         type: PageTransitionType.fade,
                                         child: FlutterFlowExpandedImageView(
-                                          image: Image.network(
-                                            showData(widget.book.image),
-                                            fit: BoxFit.contain,
-                                          ),
+                                          image: !book.image!.contains("https")
+                                              ? Image.memory(
+                                                  base64Decode(
+                                                      showData(book.image)),
+                                                )
+                                              : Image.network(
+                                                  showData(book.image)),
                                           allowRotation: false,
                                           tag: 'imageTag',
                                           useHeroAnimation: true,
@@ -206,12 +211,20 @@ class _BookInfoWidgetState extends State<BookInfoWidget> {
                                     transitionOnUserGestures: true,
                                     child: ClipRRect(
                                       borderRadius: BorderRadius.circular(18.0),
-                                      child: Image.network(
-                                        showData(widget.book.image),
-                                        width: 300.0,
-                                        height: 200.0,
-                                        fit: BoxFit.contain,
-                                      ),
+                                      child: !book.image!.contains("https")
+                                          ? Image.memory(
+                                              base64Decode(
+                                                  showData(book.image)),
+                                              width: 300.0,
+                                              height: 200.0,
+                                              fit: BoxFit.contain,
+                                            )
+                                          : Image.network(
+                                              showData(book.image),
+                                              width: 300.0,
+                                              height: 200.0,
+                                              fit: BoxFit.contain,
+                                            ),
                                     ),
                                   ),
                                 ),
@@ -234,7 +247,7 @@ class _BookInfoWidgetState extends State<BookInfoWidget> {
                                           CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          showData(widget.book.title),
+                                          showData(book.title),
                                           style: FlutterFlowTheme.of(context)
                                               .displaySmall
                                               .override(
@@ -255,22 +268,31 @@ class _BookInfoWidgetState extends State<BookInfoWidget> {
                                           onPressed: () {
                                             setState(() {
                                               print('IconButton pressed ...');
-                                              print("id: ${widget.book.id}");
-                                              print("title: ${widget.book.title}");
-                                              print("author: ${widget.book.author}");
-                                              print("pages: ${widget.book.pages}");
-                                              print("chapters: ${widget.book.chapters}");
-                                              print("startReading: ${widget.book.startReading}");
-                                              print("endReading: ${widget.book.endReading}");
-                                              print("progress: ${widget.book.progress}");
-                                              print("How to Read: ${widget.book.howToRead}");
-                                              print("language: ${widget.book.language}");
-                                              print("editionPublicationDate: ${widget.book.editionPublicationDate}");
-                                              print("goal: ${widget.book.goal}");
-                                              print("publicationDate: ${widget.book.publicationDate}");
-                                              print("Status: ${widget.book.status}");
-                                              print("Tags: ${widget.book.tags}");
-                                              print("Type: ${widget.book.type}");
+                                              print("id: ${book.id}");
+                                              print("title: ${book.title}");
+                                              print("author: ${book.author}");
+                                              print("pages: ${book.pages}");
+                                              print(
+                                                  "chapters: ${book.chapters}");
+                                              print(
+                                                  "startReading: ${book.startReading}");
+                                              print(
+                                                  "endReading: ${book.endReading}");
+                                              print(
+                                                  "progress: ${book.progress}");
+                                              print(
+                                                  "How to Read: ${book.howToRead}");
+                                              print(
+                                                  "language: ${book.language}");
+                                              print(
+                                                  "editionPublicationDate: ${book.editionPublicationDate}");
+                                              print("goal: ${book.goal}");
+                                              print(
+                                                  "publicationDate: ${book.publicationDate}");
+                                              print("Status: ${book.status}");
+                                              print("Tags: ${book.tags}");
+                                              print("Type: ${book.type}");
+                                              print("Imagem: ${book.image}");
                                             });
                                           },
                                         ),
@@ -294,24 +316,24 @@ class _BookInfoWidgetState extends State<BookInfoWidget> {
                                                       .getText(
                                                     'u1g4qeib' /* Autor */,
                                                   ),
-                                                  style:
-                                                      FlutterFlowTheme.of(context)
-                                                          .bodyMedium
-                                                          .override(
-                                                            fontFamily:
-                                                                'Readex Pro',
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                          ),
+                                                  style: FlutterFlowTheme.of(
+                                                          context)
+                                                      .bodyMedium
+                                                      .override(
+                                                        fontFamily:
+                                                            'Readex Pro',
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                      ),
                                                 ),
                                                 Text(
                                                   FFLocalizations.of(context)
                                                       .getText(
                                                     'trfv924u' /* : */,
                                                   ),
-                                                  style:
-                                                      FlutterFlowTheme.of(context)
-                                                          .bodyMedium,
+                                                  style: FlutterFlowTheme.of(
+                                                          context)
+                                                      .bodyMedium,
                                                 ),
                                               ],
                                             ),
@@ -323,24 +345,24 @@ class _BookInfoWidgetState extends State<BookInfoWidget> {
                                                       .getText(
                                                     'mvmtc5h6' /* Páginas */,
                                                   ),
-                                                  style:
-                                                      FlutterFlowTheme.of(context)
-                                                          .bodyMedium
-                                                          .override(
-                                                            fontFamily:
-                                                                'Readex Pro',
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                          ),
+                                                  style: FlutterFlowTheme.of(
+                                                          context)
+                                                      .bodyMedium
+                                                      .override(
+                                                        fontFamily:
+                                                            'Readex Pro',
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                      ),
                                                 ),
                                                 Text(
                                                   FFLocalizations.of(context)
                                                       .getText(
                                                     '8w66i8k2' /* : */,
                                                   ),
-                                                  style:
-                                                      FlutterFlowTheme.of(context)
-                                                          .bodyMedium,
+                                                  style: FlutterFlowTheme.of(
+                                                          context)
+                                                      .bodyMedium,
                                                 ),
                                               ],
                                             ),
@@ -352,30 +374,30 @@ class _BookInfoWidgetState extends State<BookInfoWidget> {
                                                       .getText(
                                                     'gtuj94er' /* Capitulos */,
                                                   ),
-                                                  style:
-                                                      FlutterFlowTheme.of(context)
-                                                          .bodyMedium
-                                                          .override(
-                                                            fontFamily:
-                                                                'Readex Pro',
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                          ),
+                                                  style: FlutterFlowTheme.of(
+                                                          context)
+                                                      .bodyMedium
+                                                      .override(
+                                                        fontFamily:
+                                                            'Readex Pro',
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                      ),
                                                 ),
                                                 Text(
                                                   FFLocalizations.of(context)
                                                       .getText(
                                                     'bcr072xq' /* : */,
                                                   ),
-                                                  style:
-                                                      FlutterFlowTheme.of(context)
-                                                          .bodyMedium,
+                                                  style: FlutterFlowTheme.of(
+                                                          context)
+                                                      .bodyMedium,
                                                 ),
                                               ],
                                             ),
                                             Padding(
-                                              padding:
-                                                  EdgeInsetsDirectional.fromSTEB(
+                                              padding: EdgeInsetsDirectional
+                                                  .fromSTEB(
                                                       0.0, 18.0, 0.0, 0.0),
                                               child: Row(
                                                 mainAxisSize: MainAxisSize.max,
@@ -415,24 +437,24 @@ class _BookInfoWidgetState extends State<BookInfoWidget> {
                                                       .getText(
                                                     'yzatmtad' /* Fim */,
                                                   ),
-                                                  style:
-                                                      FlutterFlowTheme.of(context)
-                                                          .bodyMedium
-                                                          .override(
-                                                            fontFamily:
-                                                                'Readex Pro',
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                          ),
+                                                  style: FlutterFlowTheme.of(
+                                                          context)
+                                                      .bodyMedium
+                                                      .override(
+                                                        fontFamily:
+                                                            'Readex Pro',
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                      ),
                                                 ),
                                                 Text(
                                                   FFLocalizations.of(context)
                                                       .getText(
                                                     'adiaebk6' /* : */,
                                                   ),
-                                                  style:
-                                                      FlutterFlowTheme.of(context)
-                                                          .bodyMedium,
+                                                  style: FlutterFlowTheme.of(
+                                                          context)
+                                                      .bodyMedium,
                                                 ),
                                               ],
                                             ),
@@ -447,10 +469,10 @@ class _BookInfoWidgetState extends State<BookInfoWidget> {
                                               mainAxisSize: MainAxisSize.max,
                                               children: [
                                                 Text(
-                                                  showData(widget.book.author),
-                                                  style:
-                                                      FlutterFlowTheme.of(context)
-                                                          .bodyMedium,
+                                                  showData(book.author),
+                                                  style: FlutterFlowTheme.of(
+                                                          context)
+                                                      .bodyMedium,
                                                 ),
                                               ],
                                             ),
@@ -458,10 +480,10 @@ class _BookInfoWidgetState extends State<BookInfoWidget> {
                                               mainAxisSize: MainAxisSize.max,
                                               children: [
                                                 Text(
-                                                  showData(widget.book.pages),
-                                                  style:
-                                                      FlutterFlowTheme.of(context)
-                                                          .bodyMedium,
+                                                  showData(book.pages),
+                                                  style: FlutterFlowTheme.of(
+                                                          context)
+                                                      .bodyMedium,
                                                 ),
                                               ],
                                             ),
@@ -469,23 +491,22 @@ class _BookInfoWidgetState extends State<BookInfoWidget> {
                                               mainAxisSize: MainAxisSize.max,
                                               children: [
                                                 Text(
-                                                  showData(widget.book.chapters),
-                                                  style:
-                                                      FlutterFlowTheme.of(context)
-                                                          .bodyMedium,
+                                                  showData(book.chapters),
+                                                  style: FlutterFlowTheme.of(
+                                                          context)
+                                                      .bodyMedium,
                                                 ),
                                               ],
                                             ),
                                             Padding(
-                                              padding:
-                                                  EdgeInsetsDirectional.fromSTEB(
+                                              padding: EdgeInsetsDirectional
+                                                  .fromSTEB(
                                                       0.0, 18.0, 0.0, 0.0),
                                               child: Row(
                                                 mainAxisSize: MainAxisSize.max,
                                                 children: [
                                                   Text(
-                                                    showData(
-                                                        widget.book.startReading),
+                                                    showData(book.startReading),
                                                     style: FlutterFlowTheme.of(
                                                             context)
                                                         .bodyMedium,
@@ -497,11 +518,10 @@ class _BookInfoWidgetState extends State<BookInfoWidget> {
                                               mainAxisSize: MainAxisSize.max,
                                               children: [
                                                 Text(
-                                                  showData(
-                                                      widget.book.endReading),
-                                                  style:
-                                                      FlutterFlowTheme.of(context)
-                                                          .bodyMedium,
+                                                  showData(book.endReading),
+                                                  style: FlutterFlowTheme.of(
+                                                          context)
+                                                      .bodyMedium,
                                                 ),
                                               ],
                                             ),
@@ -514,9 +534,9 @@ class _BookInfoWidgetState extends State<BookInfoWidget> {
                                           const EdgeInsetsDirectional.fromSTEB(
                                               0.0, 32.0, 0.0, 0.0),
                                       child: Text(
-                                        widget.book.progress.toString() +
+                                        book.progress.toString() +
                                             " páginas de " +
-                                            widget.book.pages.toString(),
+                                            book.pages.toString(),
                                         style: FlutterFlowTheme.of(context)
                                             .bodyLarge
                                             .override(
@@ -529,21 +549,23 @@ class _BookInfoWidgetState extends State<BookInfoWidget> {
                                       padding: EdgeInsetsDirectional.fromSTEB(
                                           0.0, 8.0, 0.0, 0.0),
                                       child: LinearPercentIndicator(
-                                        percent: widget.book.progress! /
-                                            widget.book.pages,
-                                        width: MediaQuery.sizeOf(context).width *
-                                            0.45,
+                                        percent: book.progress! / book.pages,
+                                        width:
+                                            MediaQuery.sizeOf(context).width *
+                                                0.45,
                                         lineHeight: 18.0,
                                         animation: true,
                                         progressColor:
-                                            FlutterFlowTheme.of(context).primary,
+                                            FlutterFlowTheme.of(context)
+                                                .primary,
                                         backgroundColor:
-                                            FlutterFlowTheme.of(context).accent4,
+                                            FlutterFlowTheme.of(context)
+                                                .accent4,
                                         center: Padding(
                                           padding: const EdgeInsetsDirectional
                                               .fromSTEB(0.0, 0.0, 220.0, 0.0),
                                           child: Text(
-                                            "${((widget.book.progress! / widget.book.pages) * 100).floor()}%",
+                                            "${((book.progress! / book.pages) * 100).floor()}%",
                                             textAlign: TextAlign.center,
                                             style: FlutterFlowTheme.of(context)
                                                 .titleSmall,
@@ -574,13 +596,12 @@ class _BookInfoWidgetState extends State<BookInfoWidget> {
                                   ),
                             ),
                             TextSynopsis(
-                                text: showData(widget.book.synopsis),
-                                maxLines: 3),
+                                text: showData(book.synopsis), maxLines: 3),
                           ],
                         ),
                         Padding(
-                          padding:
-                              EdgeInsetsDirectional.fromSTEB(0.0, 16.0, 0.0, 0.0),
+                          padding: EdgeInsetsDirectional.fromSTEB(
+                              0.0, 16.0, 0.0, 0.0),
                           child: Row(
                             mainAxisSize: MainAxisSize.max,
                             children: [
@@ -613,21 +634,21 @@ class _BookInfoWidgetState extends State<BookInfoWidget> {
                                 ),
                               ),
                               Text(
-                                showData(widget.book.publicationDate),
+                                showData(book.publicationDate),
                                 maxLines: 5,
                                 style: FlutterFlowTheme.of(context)
-                                .bodyMedium
-                                .override(
-                                  fontFamily: 'Readex Pro',
-                                  fontSize: 14.0,
-                                ),
+                                    .bodyMedium
+                                    .override(
+                                      fontFamily: 'Readex Pro',
+                                      fontSize: 14.0,
+                                    ),
                               ),
                             ],
                           ),
                         ),
                         Padding(
-                          padding:
-                              EdgeInsetsDirectional.fromSTEB(0.0, 20.0, 0.0, 0.0),
+                          padding: EdgeInsetsDirectional.fromSTEB(
+                              0.0, 20.0, 0.0, 0.0),
                           child: Text(
                             FFLocalizations.of(context).getText(
                               '4c6dqvla' /* Informações da edição */,
@@ -775,7 +796,7 @@ class _BookInfoWidgetState extends State<BookInfoWidget> {
                                       mainAxisSize: MainAxisSize.max,
                                       children: [
                                         Text(
-                                          "${widget.book.publisher}",
+                                          "${book.publisher}",
                                           style: FlutterFlowTheme.of(context)
                                               .bodyMedium,
                                         ),
@@ -785,8 +806,7 @@ class _BookInfoWidgetState extends State<BookInfoWidget> {
                                       mainAxisSize: MainAxisSize.max,
                                       children: [
                                         Text(
-                                          showData(
-                                              widget.book.editionPublicationDate),
+                                          showData(book.editionPublicationDate),
                                           style: FlutterFlowTheme.of(context)
                                               .bodyMedium,
                                         ),
@@ -796,7 +816,7 @@ class _BookInfoWidgetState extends State<BookInfoWidget> {
                                       mainAxisSize: MainAxisSize.max,
                                       children: [
                                         Text(
-                                          showData(widget.book.language),
+                                          showData(book.language),
                                           style: FlutterFlowTheme.of(context)
                                               .bodyMedium,
                                         ),
@@ -809,7 +829,7 @@ class _BookInfoWidgetState extends State<BookInfoWidget> {
                                         mainAxisSize: MainAxisSize.max,
                                         children: [
                                           Text(
-                                            showData(widget.book.isbn10),
+                                            showData(book.isbn10),
                                             style: FlutterFlowTheme.of(context)
                                                 .bodyMedium,
                                           ),
@@ -820,7 +840,7 @@ class _BookInfoWidgetState extends State<BookInfoWidget> {
                                       mainAxisSize: MainAxisSize.max,
                                       children: [
                                         Text(
-                                          showData(widget.book.isbn13),
+                                          showData(book.isbn13),
                                           style: FlutterFlowTheme.of(context)
                                               .bodyMedium,
                                         ),
@@ -833,8 +853,8 @@ class _BookInfoWidgetState extends State<BookInfoWidget> {
                           ],
                         ),
                         Padding(
-                          padding:
-                              EdgeInsetsDirectional.fromSTEB(0.0, 16.0, 0.0, 0.0),
+                          padding: EdgeInsetsDirectional.fromSTEB(
+                              0.0, 16.0, 0.0, 0.0),
                           child: Row(
                             mainAxisSize: MainAxisSize.max,
                             children: [
@@ -870,27 +890,30 @@ class _BookInfoWidgetState extends State<BookInfoWidget> {
                                 padding: EdgeInsetsDirectional.fromSTEB(
                                     4.0, 0.0, 4.0, 0.0),
                                 child: Container(
-                                  width: MediaQuery.of(context).size.width - 100,
+                                  width:
+                                      MediaQuery.of(context).size.width - 100,
                                   height: 35.0,
-                                  child: TagsList(tagsString: widget.book.tags),
+                                  child: TagsList(tagsString: book.tags),
                                 ),
                               ),
                             ],
                           ),
                         ),
                         Padding(
-                          padding:
-                              EdgeInsetsDirectional.fromSTEB(0.0, 8.0, 0.0, 0.0),
+                          padding: EdgeInsetsDirectional.fromSTEB(
+                              0.0, 8.0, 0.0, 0.0),
                           child: Column(
                             mainAxisSize: MainAxisSize.max,
                             children: [
                               Row(
                                 mainAxisSize: MainAxisSize.max,
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   Column(
                                     mainAxisSize: MainAxisSize.max,
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Row(
                                         mainAxisSize: MainAxisSize.max,
@@ -919,13 +942,14 @@ class _BookInfoWidgetState extends State<BookInfoWidget> {
                                   ),
                                   Column(
                                     mainAxisSize: MainAxisSize.max,
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Row(
                                         mainAxisSize: MainAxisSize.max,
                                         children: [
                                           Text(
-                                            showData(widget.book.type),
+                                            showData(book.type),
                                             style: FlutterFlowTheme.of(context)
                                                 .bodyMedium,
                                           ),
