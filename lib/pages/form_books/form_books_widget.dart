@@ -134,6 +134,7 @@ class _FormBooksWidgetState extends State<FormBooksWidget> {
                   size: 30.0,
                 ),
                 onPressed: () {
+                  setState(() {});
                   print('IconButton pressed ...');
                 },
               ),
@@ -1298,17 +1299,48 @@ class _CapeImageState extends State<CapeImage> {
     );
   }
 
-  Future<void> _pickImage() async {
+  Future _pickImage() async {
     ImagePicker imagePicker = ImagePicker();
-    XFile? image = await imagePicker.pickImage(source: ImageSource.gallery);
+    XFile? image;
 
-    if (image == null) return;
+    showModalBottomSheet(
+        context: context,
+        builder: (BuildContext context) {
+          return Container(
+            padding: EdgeInsets.only(
+              top: 15,
+              left: 15,
+              right: 15,
+              // this will prevent the soft keyboard from covering the text fields
+              bottom: MediaQuery.of(context).viewInsets.bottom,
+            ),
+            child: Column(
+              children: [
+                ElevatedButton(
+                    onPressed: () async {
+                      image = await imagePicker.pickImage(
+                          source: ImageSource.gallery);
+                      if (image == null) return;
+                      context.safePop();
+                    },
+                    child: Text("Galeria", style: TextStyle(),)),
+                ElevatedButton(
+                    onPressed: () async {
+                      image = await imagePicker.pickImage(
+                          source: ImageSource.camera);
+                      if (image == null) return;
+                      context.safePop();
+                    },
+                    child: Text("Câmera", style: TextStyle(),)),
+              ],
+            ),
+          );
+        }).then((value) => setState(() {
+          File imageFile = File(image!.path);
+          _image = imageFile;
+          imageExists = true;
+          widget.book.image = base64Encode(imageFile.readAsBytesSync());
+        }));
 
-    setState(() {
-      File imageFile = File(image.path);
-      _image = imageFile;
-      imageExists = true;
-      widget.book.image = base64Encode(imageFile.readAsBytesSync());
-    });
   }
 }
