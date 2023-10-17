@@ -37,6 +37,66 @@ class _BookInfoWidgetState extends State<BookInfoWidget> {
     tags.forEach((int tag) => print(tag));
   }
 
+  returnImage() {
+    Book book = widget.book;
+    if (book.image!.contains("asset")) {
+      return Image.asset(
+        "${book.image}",
+        width: 100.0,
+        height: 125.0,
+        fit: BoxFit.cover,
+      );
+    } else if (book.image!.contains("http")) {
+      return Image.network(
+        "${book.image}",
+        width: 100.0,
+        height: 125.0,
+        fit: BoxFit.cover,
+      );
+    } else {
+      return Image.memory(
+        base64Decode(showData(book.image)),
+        width: 100.0,
+        height: 125.0,
+        fit: BoxFit.cover,
+      );
+    } /*else {
+      return Image.network(
+        'https://www.lojadobolseiro.com.br/uploads/images/2020/02/76-livro-o-hobbit-capa-smaug-j-r-r-tolkien-1582738560.jpg',
+        width: 100.0,
+        height: 125.0,
+        fit: BoxFit.cover,
+      );
+    }*/
+  }
+
+  returnBigImage() {
+    Book book = widget.book;
+    if (book.image!.contains("asset")) {
+      return Image.asset(
+        "${book.image}",
+        width: 300.0,
+        height: 200.0,
+        fit: BoxFit.contain,
+      );
+    } else if (book.image!.contains("http")) {
+      return Image.network(
+        "${book.image}",
+        width: 300.0,
+        height: 200.0,
+        fit: BoxFit.contain,
+      );
+    } else {
+      return Image.memory(
+        base64Decode(showData(book.image)),
+        width: 300.0,
+        height: 200.0,
+        fit: BoxFit.contain,
+      );
+  }
+
+  }
+
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
@@ -192,13 +252,7 @@ class _BookInfoWidgetState extends State<BookInfoWidget> {
                                       PageTransition(
                                         type: PageTransitionType.fade,
                                         child: FlutterFlowExpandedImageView(
-                                          image: !book.image!.contains("https")
-                                              ? Image.memory(
-                                                  base64Decode(
-                                                      showData(book.image)),
-                                                )
-                                              : Image.network(
-                                                  showData(book.image)),
+                                          image: returnImage(),
                                           allowRotation: false,
                                           tag: 'imageTag',
                                           useHeroAnimation: true,
@@ -211,20 +265,7 @@ class _BookInfoWidgetState extends State<BookInfoWidget> {
                                     transitionOnUserGestures: true,
                                     child: ClipRRect(
                                       borderRadius: BorderRadius.circular(18.0),
-                                      child: !book.image!.contains("https")
-                                          ? Image.memory(
-                                              base64Decode(
-                                                  showData(book.image)),
-                                              width: 300.0,
-                                              height: 200.0,
-                                              fit: BoxFit.contain,
-                                            )
-                                          : Image.network(
-                                              showData(book.image),
-                                              width: 300.0,
-                                              height: 200.0,
-                                              fit: BoxFit.contain,
-                                            ),
+                                      child: returnBigImage(),
                                     ),
                                   ),
                                 ),

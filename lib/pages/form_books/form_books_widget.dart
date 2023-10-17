@@ -200,9 +200,7 @@ class _FormBooksWidgetState extends State<FormBooksWidget> {
                                                     .labelMedium,
                                             enabledBorder: UnderlineInputBorder(
                                               borderSide: BorderSide(
-                                                color:
-                                                    FlutterFlowTheme.of(context)
-                                                        .alternate,
+                                                color: Colors.blueAccent,
                                                 width: 2.0,
                                               ),
                                               borderRadius:
@@ -210,9 +208,7 @@ class _FormBooksWidgetState extends State<FormBooksWidget> {
                                             ),
                                             focusedBorder: UnderlineInputBorder(
                                               borderSide: BorderSide(
-                                                color:
-                                                    FlutterFlowTheme.of(context)
-                                                        .primary,
+                                                color: Colors.blueAccent,
                                                 width: 2.0,
                                               ),
                                               borderRadius:
@@ -275,9 +271,7 @@ class _FormBooksWidgetState extends State<FormBooksWidget> {
                                                     .labelMedium,
                                             enabledBorder: UnderlineInputBorder(
                                               borderSide: BorderSide(
-                                                color:
-                                                    FlutterFlowTheme.of(context)
-                                                        .alternate,
+                                                color: Colors.blueAccent,
                                                 width: 2.0,
                                               ),
                                               borderRadius:
@@ -285,9 +279,7 @@ class _FormBooksWidgetState extends State<FormBooksWidget> {
                                             ),
                                             focusedBorder: UnderlineInputBorder(
                                               borderSide: BorderSide(
-                                                color:
-                                                    FlutterFlowTheme.of(context)
-                                                        .primary,
+                                                color: Colors.blueAccent,
                                                 width: 2.0,
                                               ),
                                               borderRadius:
@@ -350,8 +342,7 @@ class _FormBooksWidgetState extends State<FormBooksWidget> {
                                           .labelMedium,
                                       enabledBorder: UnderlineInputBorder(
                                         borderSide: BorderSide(
-                                          color: FlutterFlowTheme.of(context)
-                                              .alternate,
+                                          color: Colors.blueAccent,
                                           width: 2.0,
                                         ),
                                         borderRadius:
@@ -359,8 +350,7 @@ class _FormBooksWidgetState extends State<FormBooksWidget> {
                                       ),
                                       focusedBorder: UnderlineInputBorder(
                                         borderSide: BorderSide(
-                                          color: FlutterFlowTheme.of(context)
-                                              .primary,
+                                          color: Colors.blueAccent,
                                           width: 2.0,
                                         ),
                                         borderRadius:
@@ -1176,7 +1166,7 @@ class _FormBooksWidgetState extends State<FormBooksWidget> {
 
                                   if (book.image == "" || book.image == null) {
                                     book.image =
-                                        "https://www.lojadobolseiro.com.br/uploads/images/2020/02/76-livro-o-hobbit-capa-smaug-j-r-r-tolkien-1582738560.jpg";
+                                        "assets/images/no_cover_placeholder.jpg";
                                   }
 
                                   Book bookSave = Book(
@@ -1288,8 +1278,8 @@ class _CapeImageState extends State<CapeImage> {
                 height: 125.0,
                 fit: BoxFit.cover,
               )
-            : Image.network(
-                "https://www.lojadobolseiro.com.br/uploads/images/2020/02/76-livro-o-hobbit-capa-smaug-j-r-r-tolkien-1582738560.jpg",
+            : Image.asset(
+                "assets/images/no_cover_placeholder.jpg",
                 width: 100.0,
                 height: 125.0,
                 fit: BoxFit.cover,

@@ -5,7 +5,7 @@
 
 
     <application
-        android:label="bookTracker"
+        android:label="Book Tracker"
         tools:replace="android:label"
         android:icon="@mipmap/ic_launcher"
         android:requestLegacyExternalStorage="true">

@@ -82,7 +82,14 @@ class _BookSummaryState extends State<BookSummary> {
 
   returnImage() {
     Book book = widget.book;
-    if (book.image!.contains("http")) {
+    if (book.image!.contains("asset")) {
+      return Image.asset(
+        "${book.image}",
+        width: 100.0,
+        height: 125.0,
+        fit: BoxFit.cover,
+      );
+    } else if (book.image!.contains("http")) {
       return Image.network(
         "${book.image}",
         width: 100.0,
