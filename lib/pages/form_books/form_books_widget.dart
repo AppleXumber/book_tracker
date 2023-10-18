@@ -22,7 +22,7 @@ export 'form_books_model.dart';
 
 class FormBooksWidget extends StatefulWidget {
   FormBooksWidget({Key? key, required this.bookJson}) : super(key: key);
-  String bookJson;
+  final String bookJson;
 
   @override
   _FormBooksWidgetState createState() => _FormBooksWidgetState();
@@ -1264,6 +1264,7 @@ class _CapeImageState extends State<CapeImage> {
   @override
   Widget build(BuildContext context) {
     Book book = widget.book;
+    print(book.image);
     return InkWell(
       child: Container(
         width: 125.0,
@@ -1278,12 +1279,19 @@ class _CapeImageState extends State<CapeImage> {
                 height: 125.0,
                 fit: BoxFit.cover,
               )
-            : Image.asset(
-                "assets/images/no_cover_placeholder.jpg",
-                width: 100.0,
-                height: 125.0,
-                fit: BoxFit.cover,
-              ),
+            : (book.image == null
+                ? Image.asset(
+                    "assets/images/no_cover_placeholder.jpg",
+                    width: 100.0,
+                    height: 125.0,
+                    fit: BoxFit.cover,
+                  )
+                : Image.memory(
+                    base64Decode(showData(book.image)),
+                    width: 100.0,
+                    height: 125.0,
+                    fit: BoxFit.cover,
+                  )),
       ),
       onTap: _pickImage,
     );
@@ -1313,7 +1321,10 @@ class _CapeImageState extends State<CapeImage> {
                       if (image == null) return;
                       context.safePop();
                     },
-                    child: Text("Galeria", style: TextStyle(),)),
+                    child: Text(
+                      "Galeria",
+                      style: TextStyle(),
+                    )),
                 ElevatedButton(
                     onPressed: () async {
                       image = await imagePicker.pickImage(
@@ -1321,7 +1332,10 @@ class _CapeImageState extends State<CapeImage> {
                       if (image == null) return;
                       context.safePop();
                     },
-                    child: Text("Câmera", style: TextStyle(),)),
+                    child: Text(
+                      "Câmera",
+                      style: TextStyle(),
+                    )),
               ],
             ),
           );
@@ -1331,6 +1345,5 @@ class _CapeImageState extends State<CapeImage> {
           imageExists = true;
           widget.book.image = base64Encode(imageFile.readAsBytesSync());
         }));
-
   }
 }

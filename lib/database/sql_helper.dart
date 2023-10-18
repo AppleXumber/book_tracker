@@ -94,7 +94,7 @@ class SQLHelper {
 
   static Future<List<Map<String, dynamic>>> getStatus(String arg) async {
     final db = await SQLHelper.db();
-    return db.query('$_tableName', where: "status = ?", whereArgs: [arg]);
+    return db.query('$_tableName', where: "status = ?", whereArgs: [arg], orderBy: "startReading");
   }
 
   // Read a single item by id

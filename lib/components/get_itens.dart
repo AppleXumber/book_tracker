@@ -69,8 +69,6 @@ class GetItensListView extends StatelessWidget {
             return Column(
               children: [
                 Text("Erro, não foi possível encontrar os livros"),
-                BookSummary(livroLido),
-                BookSummary(livro),
               ],
             );
         }

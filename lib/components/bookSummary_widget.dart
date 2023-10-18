@@ -194,6 +194,9 @@ class _BookSummaryState extends State<BookSummary> {
                                   color: Colors.white,
                                   fontSize: 18.0,
                                 ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+
                           ),
                           Row(
                             mainAxisSize: MainAxisSize.max,

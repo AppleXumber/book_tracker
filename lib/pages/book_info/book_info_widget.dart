@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
 import "dart:math";
 import 'package:book_tracker/database/sql_helper.dart';
 
@@ -7,10 +6,7 @@ import '/flutter_flow/flutter_flow_expanded_image_view.dart';
 import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
-import '/flutter_flow/flutter_flow_widgets.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:page_transition/page_transition.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:provider/provider.dart';
 import 'book_info_model.dart';
@@ -19,12 +15,12 @@ import 'package:book_tracker/classes/books.dart';
 import '../../classes/show_data.dart';
 
 class BookInfoWidget extends StatefulWidget {
-  BookInfoWidget({
+  const BookInfoWidget({
     Key? key,
     required this.book,
   }) : super(key: key);
 
-  Book book;
+  final Book book;
 
   @override
   _BookInfoWidgetState createState() => _BookInfoWidgetState();
@@ -42,23 +38,23 @@ class _BookInfoWidgetState extends State<BookInfoWidget> {
     if (book.image!.contains("asset")) {
       return Image.asset(
         "${book.image}",
-        width: 100.0,
-        height: 125.0,
-        fit: BoxFit.cover,
+        width: 300.0,
+        height: 200.0,
+        fit: BoxFit.contain,
       );
     } else if (book.image!.contains("http")) {
       return Image.network(
         "${book.image}",
-        width: 100.0,
-        height: 125.0,
-        fit: BoxFit.cover,
+        width: 300.0,
+        height: 200.0,
+        fit: BoxFit.contain,
       );
     } else {
       return Image.memory(
         base64Decode(showData(book.image)),
-        width: 100.0,
-        height: 125.0,
-        fit: BoxFit.cover,
+        width: 300.0,
+        height: 200.0,
+        fit: BoxFit.contain,
       );
     } /*else {
       return Image.network(
@@ -93,8 +89,7 @@ class _BookInfoWidgetState extends State<BookInfoWidget> {
         height: 200.0,
         fit: BoxFit.contain,
       );
-  }
-
+    }
   }
 
   final scaffoldKey = GlobalKey<ScaffoldState>();
@@ -205,9 +200,12 @@ class _BookInfoWidgetState extends State<BookInfoWidget> {
                 context.pushNamed('form_books', queryParameters: {
                   "bookJson": serializeParam(
                       jsonEncode(widget.book.toJson()), ParamType.JSON)
-                }).then((value) => setState(() {
-                      print("Recarregando tela");
-                    }));
+                }).then((value) {
+                  setState(() {
+                    context.safePop();
+
+                    });
+                });
               },
             ),
           ],
@@ -287,14 +285,17 @@ class _BookInfoWidgetState extends State<BookInfoWidget> {
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
-                                        Text(
-                                          showData(book.title),
-                                          style: FlutterFlowTheme.of(context)
-                                              .displaySmall
-                                              .override(
-                                                fontFamily: 'Outfit',
-                                                fontSize: 28.0,
-                                              ),
+                                        Expanded(
+                                          child: Text(
+                                            showData(book.title),
+                                            style: FlutterFlowTheme.of(context)
+                                                .displaySmall
+                                                .override(
+                                                  fontFamily: 'Outfit',
+                                                  fontSize: 20.0,
+                                                ),
+                                            softWrap: true,
+                                          ),
                                         ),
                                         FlutterFlowIconButton(
                                           borderRadius: 20.0,
@@ -349,156 +350,39 @@ class _BookInfoWidgetState extends State<BookInfoWidget> {
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
                                           children: [
-                                            Row(
-                                              mainAxisSize: MainAxisSize.max,
-                                              children: [
-                                                Text(
-                                                  FFLocalizations.of(context)
-                                                      .getText(
-                                                    'u1g4qeib' /* Autor */,
-                                                  ),
-                                                  style: FlutterFlowTheme.of(
-                                                          context)
-                                                      .bodyMedium
-                                                      .override(
-                                                        fontFamily:
-                                                            'Readex Pro',
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                      ),
-                                                ),
-                                                Text(
-                                                  FFLocalizations.of(context)
-                                                      .getText(
-                                                    'trfv924u' /* : */,
-                                                  ),
-                                                  style: FlutterFlowTheme.of(
-                                                          context)
-                                                      .bodyMedium,
-                                                ),
-                                              ],
-                                            ),
-                                            Row(
-                                              mainAxisSize: MainAxisSize.max,
-                                              children: [
-                                                Text(
-                                                  FFLocalizations.of(context)
-                                                      .getText(
-                                                    'mvmtc5h6' /* Páginas */,
-                                                  ),
-                                                  style: FlutterFlowTheme.of(
-                                                          context)
-                                                      .bodyMedium
-                                                      .override(
-                                                        fontFamily:
-                                                            'Readex Pro',
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                      ),
-                                                ),
-                                                Text(
-                                                  FFLocalizations.of(context)
-                                                      .getText(
-                                                    '8w66i8k2' /* : */,
-                                                  ),
-                                                  style: FlutterFlowTheme.of(
-                                                          context)
-                                                      .bodyMedium,
-                                                ),
-                                              ],
-                                            ),
-                                            Row(
-                                              mainAxisSize: MainAxisSize.max,
-                                              children: [
-                                                Text(
-                                                  FFLocalizations.of(context)
-                                                      .getText(
-                                                    'gtuj94er' /* Capitulos */,
-                                                  ),
-                                                  style: FlutterFlowTheme.of(
-                                                          context)
-                                                      .bodyMedium
-                                                      .override(
-                                                        fontFamily:
-                                                            'Readex Pro',
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                      ),
-                                                ),
-                                                Text(
-                                                  FFLocalizations.of(context)
-                                                      .getText(
-                                                    'bcr072xq' /* : */,
-                                                  ),
-                                                  style: FlutterFlowTheme.of(
-                                                          context)
-                                                      .bodyMedium,
-                                                ),
-                                              ],
-                                            ),
-                                            Padding(
-                                              padding: EdgeInsetsDirectional
-                                                  .fromSTEB(
-                                                      0.0, 18.0, 0.0, 0.0),
-                                              child: Row(
-                                                mainAxisSize: MainAxisSize.max,
-                                                children: [
-                                                  Text(
-                                                    FFLocalizations.of(context)
-                                                        .getText(
-                                                      'r146dbdk' /* Início */,
-                                                    ),
-                                                    style: FlutterFlowTheme.of(
-                                                            context)
-                                                        .bodyMedium
-                                                        .override(
-                                                          fontFamily:
-                                                              'Readex Pro',
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                        ),
-                                                  ),
-                                                  Text(
-                                                    FFLocalizations.of(context)
-                                                        .getText(
-                                                      'a2yiqlgj' /* : */,
-                                                    ),
-                                                    style: FlutterFlowTheme.of(
-                                                            context)
-                                                        .bodyMedium,
-                                                  ),
-                                                ],
+                                            ShowDetails(
+                                              text: FFLocalizations.of(context)
+                                                  .getText(
+                                                'u1g4qeib' /* Autor */,
                                               ),
                                             ),
-                                            Row(
-                                              mainAxisSize: MainAxisSize.max,
-                                              children: [
-                                                Text(
-                                                  FFLocalizations.of(context)
-                                                      .getText(
-                                                    'yzatmtad' /* Fim */,
-                                                  ),
-                                                  style: FlutterFlowTheme.of(
-                                                          context)
-                                                      .bodyMedium
-                                                      .override(
-                                                        fontFamily:
-                                                            'Readex Pro',
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                      ),
-                                                ),
-                                                Text(
-                                                  FFLocalizations.of(context)
-                                                      .getText(
-                                                    'adiaebk6' /* : */,
-                                                  ),
-                                                  style: FlutterFlowTheme.of(
-                                                          context)
-                                                      .bodyMedium,
-                                                ),
-                                              ],
+                                            ShowDetails(
+                                                text:
+                                                    FFLocalizations.of(context)
+                                                        .getText(
+                                              'mvmtc5h6' /* Páginas */,
+                                            )),
+                                            ShowDetails(
+                                                text:
+                                                    FFLocalizations.of(context)
+                                                        .getText(
+                                              'gtuj94er' /* Capitulos */,
+                                            )),
+                                            const SizedBox(
+                                              height: 18,
                                             ),
+                                            ShowDetails(
+                                                text:
+                                                    FFLocalizations.of(context)
+                                                        .getText(
+                                              'r146dbdk' /* Início */,
+                                            )),
+                                            ShowDetails(
+                                                text:
+                                                    FFLocalizations.of(context)
+                                                        .getText(
+                                              'yzatmtad' /* Fim */,
+                                            )),
                                           ],
                                         ),
                                         Column(
@@ -506,65 +390,38 @@ class _BookInfoWidgetState extends State<BookInfoWidget> {
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
                                           children: [
-                                            Row(
-                                              mainAxisSize: MainAxisSize.max,
-                                              children: [
-                                                Text(
-                                                  showData(book.author),
-                                                  style: FlutterFlowTheme.of(
-                                                          context)
+                                            Text(
+                                              showData(book.author),
+                                              style:
+                                                  FlutterFlowTheme.of(context)
                                                       .bodyMedium,
-                                                ),
-                                              ],
                                             ),
-                                            Row(
-                                              mainAxisSize: MainAxisSize.max,
-                                              children: [
-                                                Text(
-                                                  showData(book.pages),
-                                                  style: FlutterFlowTheme.of(
-                                                          context)
+                                            Text(
+                                              showData(book.pages),
+                                              style:
+                                                  FlutterFlowTheme.of(context)
                                                       .bodyMedium,
-                                                ),
-                                              ],
                                             ),
-                                            Row(
-                                              mainAxisSize: MainAxisSize.max,
-                                              children: [
-                                                Text(
-                                                  showData(book.chapters),
-                                                  style: FlutterFlowTheme.of(
-                                                          context)
+                                            Text(
+                                              showData(book.chapters),
+                                              style:
+                                                  FlutterFlowTheme.of(context)
                                                       .bodyMedium,
-                                                ),
-                                              ],
                                             ),
-                                            Padding(
-                                              padding: EdgeInsetsDirectional
-                                                  .fromSTEB(
-                                                      0.0, 18.0, 0.0, 0.0),
-                                              child: Row(
-                                                mainAxisSize: MainAxisSize.max,
-                                                children: [
-                                                  Text(
-                                                    showData(book.startReading),
-                                                    style: FlutterFlowTheme.of(
-                                                            context)
-                                                        .bodyMedium,
-                                                  ),
-                                                ],
-                                              ),
+                                            const SizedBox(
+                                              height: 18,
                                             ),
-                                            Row(
-                                              mainAxisSize: MainAxisSize.max,
-                                              children: [
-                                                Text(
-                                                  showData(book.endReading),
-                                                  style: FlutterFlowTheme.of(
-                                                          context)
+                                            Text(
+                                              showData(book.startReading),
+                                              style:
+                                                  FlutterFlowTheme.of(context)
                                                       .bodyMedium,
-                                                ),
-                                              ],
+                                            ),
+                                            Text(
+                                              showData(book.endReading),
+                                              style:
+                                                  FlutterFlowTheme.of(context)
+                                                      .bodyMedium,
                                             ),
                                           ],
                                         ),
@@ -576,8 +433,12 @@ class _BookInfoWidgetState extends State<BookInfoWidget> {
                                               0.0, 32.0, 0.0, 0.0),
                                       child: Text(
                                         book.progress.toString() +
-                                            " páginas de " +
-                                            book.pages.toString(),
+                                            " ${book.howToRead.toString().toLowerCase().substring(0, book.howToRead.toString().length - 1)}" +
+                                            (book.progress! > 1 ? "s" : "") +
+                                            " de " +
+                                            (book.howToRead == "Páginas"
+                                                ? book.pages.toString()
+                                                : book.chapters.toString()),
                                         style: FlutterFlowTheme.of(context)
                                             .bodyLarge
                                             .override(
@@ -646,37 +507,14 @@ class _BookInfoWidgetState extends State<BookInfoWidget> {
                           child: Row(
                             mainAxisSize: MainAxisSize.max,
                             children: [
-                              Text(
-                                FFLocalizations.of(context).getText(
-                                  '5dbmbihk' /* Data de lançamento */,
-                                ),
-                                style: FlutterFlowTheme.of(context)
-                                    .bodyMedium
-                                    .override(
-                                      fontFamily: 'Readex Pro',
-                                      fontSize: 14.0,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                              ),
                               Padding(
-                                padding: EdgeInsetsDirectional.fromSTEB(
-                                    0.0, 0.0, 8.0, 0.0),
-                                child: Text(
-                                  FFLocalizations.of(context).getText(
-                                    'o9eqouo7' /* : */,
-                                  ),
-                                  style: FlutterFlowTheme.of(context)
-                                      .bodyMedium
-                                      .override(
-                                        fontFamily: 'Readex Pro',
-                                        fontSize: 14.0,
-                                        fontWeight: FontWeight.normal,
-                                      ),
-                                ),
+                                padding: const EdgeInsets.only(right: 8.0),
+                                child: ShowExpandedDetails(text: FFLocalizations.of(context).getText(
+                                  '5dbmbihk' /* Data de lançamento */,
+                                )),
                               ),
                               Text(
                                 showData(book.publicationDate),
-                                maxLines: 5,
                                 style: FlutterFlowTheme.of(context)
                                     .bodyMedium
                                     .override(
@@ -708,184 +546,68 @@ class _BookInfoWidgetState extends State<BookInfoWidget> {
                                   mainAxisSize: MainAxisSize.max,
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Row(
-                                      mainAxisSize: MainAxisSize.max,
-                                      children: [
-                                        Text(
-                                          FFLocalizations.of(context).getText(
-                                            'dthhcbrz' /* Editora */,
-                                          ),
-                                          style: FlutterFlowTheme.of(context)
-                                              .bodyMedium
-                                              .override(
-                                                fontFamily: 'Readex Pro',
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                        ),
-                                        Text(
-                                          FFLocalizations.of(context).getText(
-                                            'epfmhln3' /* : */,
-                                          ),
-                                          style: FlutterFlowTheme.of(context)
-                                              .bodyMedium,
-                                        ),
-                                      ],
-                                    ),
-                                    Row(
-                                      mainAxisSize: MainAxisSize.max,
-                                      children: [
-                                        Text(
-                                          FFLocalizations.of(context).getText(
-                                            'k4xb6fcw' /* Publicação */,
-                                          ),
-                                          style: FlutterFlowTheme.of(context)
-                                              .bodyMedium
-                                              .override(
-                                                fontFamily: 'Readex Pro',
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                        ),
-                                        Text(
-                                          FFLocalizations.of(context).getText(
-                                            '6dbvq99v' /* : */,
-                                          ),
-                                          style: FlutterFlowTheme.of(context)
-                                              .bodyMedium,
-                                        ),
-                                      ],
-                                    ),
-                                    Row(
-                                      mainAxisSize: MainAxisSize.max,
-                                      children: [
-                                        Text(
-                                          FFLocalizations.of(context).getText(
-                                            '7o55oyjz' /* Idioma */,
-                                          ),
-                                          style: FlutterFlowTheme.of(context)
-                                              .bodyMedium
-                                              .override(
-                                                fontFamily: 'Readex Pro',
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                        ),
-                                        Text(
-                                          FFLocalizations.of(context).getText(
-                                            'n85v60f2' /* : */,
-                                          ),
-                                          style: FlutterFlowTheme.of(context)
-                                              .bodyMedium,
-                                        ),
-                                      ],
-                                    ),
-                                    Padding(
-                                      padding: EdgeInsetsDirectional.fromSTEB(
-                                          0.0, 10.0, 0.0, 0.0),
-                                      child: Row(
-                                        mainAxisSize: MainAxisSize.max,
-                                        children: [
-                                          Text(
+                                    ShowExpandedDetails(
+                                        text:
                                             FFLocalizations.of(context).getText(
-                                              'kv1knnsl' /* ISBN-10 */,
-                                            ),
-                                            style: FlutterFlowTheme.of(context)
-                                                .bodyMedium
-                                                .override(
-                                                  fontFamily: 'Readex Pro',
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                          ),
-                                          Text(
+                                      'dthhcbrz' /* Editora */,
+                                    )),
+                                    ShowExpandedDetails(
+                                        text:
                                             FFLocalizations.of(context).getText(
-                                              'yxm7vs48' /* : */,
-                                            ),
-                                            style: FlutterFlowTheme.of(context)
-                                                .bodyMedium,
-                                          ),
-                                        ],
-                                      ),
+                                      'k4xb6fcw' /* Publicação */,
+                                    )),
+                                    ShowExpandedDetails(
+                                        text:
+                                            FFLocalizations.of(context).getText(
+                                      '7o55oyjz' /* Idioma */,
+                                    )),
+                                    const SizedBox(
+                                      height: 10,
                                     ),
-                                    Row(
-                                      mainAxisSize: MainAxisSize.max,
-                                      children: [
-                                        Text(
-                                          FFLocalizations.of(context).getText(
-                                            'wi1oiswf' /* ISBN-13 */,
-                                          ),
-                                          style: FlutterFlowTheme.of(context)
-                                              .bodyMedium
-                                              .override(
-                                                fontFamily: 'Readex Pro',
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                        ),
-                                        Text(
-                                          FFLocalizations.of(context).getText(
-                                            '9ng0g5ot' /* : */,
-                                          ),
-                                          style: FlutterFlowTheme.of(context)
-                                              .bodyMedium,
-                                        ),
-                                      ],
-                                    ),
+                                    ShowExpandedDetails(
+                                        text:
+                                            FFLocalizations.of(context).getText(
+                                      'kv1knnsl' /* ISBN-10 */,
+                                    )),
+                                    ShowExpandedDetails(
+                                        text:
+                                            FFLocalizations.of(context).getText(
+                                      'wi1oiswf' /* ISBN-13 */,
+                                    )),
                                   ],
                                 ),
                                 Column(
                                   mainAxisSize: MainAxisSize.max,
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Row(
-                                      mainAxisSize: MainAxisSize.max,
-                                      children: [
-                                        Text(
-                                          "${book.publisher}",
-                                          style: FlutterFlowTheme.of(context)
-                                              .bodyMedium,
-                                        ),
-                                      ],
+                                    Text(
+                                      "${book.publisher}",
+                                      style: FlutterFlowTheme.of(context)
+                                          .bodyMedium,
                                     ),
-                                    Row(
-                                      mainAxisSize: MainAxisSize.max,
-                                      children: [
-                                        Text(
-                                          showData(book.editionPublicationDate),
-                                          style: FlutterFlowTheme.of(context)
-                                              .bodyMedium,
-                                        ),
-                                      ],
+                                    Text(
+                                      showData(book.editionPublicationDate),
+                                      style: FlutterFlowTheme.of(context)
+                                          .bodyMedium,
                                     ),
-                                    Row(
-                                      mainAxisSize: MainAxisSize.max,
-                                      children: [
-                                        Text(
-                                          showData(book.language),
-                                          style: FlutterFlowTheme.of(context)
-                                              .bodyMedium,
-                                        ),
-                                      ],
+                                    Text(
+                                      showData(book.language),
+                                      style: FlutterFlowTheme.of(context)
+                                          .bodyMedium,
                                     ),
                                     Padding(
                                       padding: EdgeInsetsDirectional.fromSTEB(
                                           0.0, 10.0, 0.0, 0.0),
-                                      child: Row(
-                                        mainAxisSize: MainAxisSize.max,
-                                        children: [
-                                          Text(
-                                            showData(book.isbn10),
-                                            style: FlutterFlowTheme.of(context)
-                                                .bodyMedium,
-                                          ),
-                                        ],
+                                      child: Text(
+                                        showData(book.isbn10),
+                                        style: FlutterFlowTheme.of(context)
+                                            .bodyMedium,
                                       ),
                                     ),
-                                    Row(
-                                      mainAxisSize: MainAxisSize.max,
-                                      children: [
-                                        Text(
-                                          showData(book.isbn13),
-                                          style: FlutterFlowTheme.of(context)
-                                              .bodyMedium,
-                                        ),
-                                      ],
+                                    Text(
+                                      showData(book.isbn13),
+                                      style: FlutterFlowTheme.of(context)
+                                          .bodyMedium,
                                     ),
                                   ],
                                 ),
@@ -951,52 +673,14 @@ class _BookInfoWidgetState extends State<BookInfoWidget> {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Column(
-                                    mainAxisSize: MainAxisSize.max,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Row(
-                                        mainAxisSize: MainAxisSize.max,
-                                        children: [
-                                          Text(
-                                            FFLocalizations.of(context).getText(
-                                              'ow0vo51q' /* Tipo de livro */,
-                                            ),
-                                            style: FlutterFlowTheme.of(context)
-                                                .bodyMedium
-                                                .override(
-                                                  fontFamily: 'Readex Pro',
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                          ),
-                                          Text(
-                                            FFLocalizations.of(context).getText(
-                                              'py7u4fao' /* : */,
-                                            ),
-                                            style: FlutterFlowTheme.of(context)
-                                                .bodyMedium,
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                  Column(
-                                    mainAxisSize: MainAxisSize.max,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Row(
-                                        mainAxisSize: MainAxisSize.max,
-                                        children: [
-                                          Text(
-                                            showData(book.type),
-                                            style: FlutterFlowTheme.of(context)
-                                                .bodyMedium,
-                                          ),
-                                        ],
-                                      ),
-                                    ],
+                                  ShowExpandedDetails(
+                                      text: FFLocalizations.of(context).getText(
+                                    'ow0vo51q' /* Tipo de livro */,
+                                  )),
+                                  Text(
+                                    showData(book.type),
+                                    style:
+                                        FlutterFlowTheme.of(context).bodyMedium,
                                   ),
                                 ],
                               ),
@@ -1016,13 +700,72 @@ class _BookInfoWidgetState extends State<BookInfoWidget> {
   }
 }
 
+class ShowExpandedDetails extends StatelessWidget {
+  const ShowExpandedDetails({super.key, required this.text});
+
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.max,
+      children: [
+        Text(
+          text,
+          style: FlutterFlowTheme.of(context).bodyMedium.override(
+                fontFamily: 'Readex Pro',
+                fontWeight: FontWeight.bold,
+              ),
+        ),
+        Text(
+          FFLocalizations.of(context).getText(
+            'epfmhln3' /* : */,
+          ),
+          style: FlutterFlowTheme.of(context).bodyMedium,
+        ),
+      ],
+    );
+  }
+}
+
+class ShowDetails extends StatelessWidget {
+  const ShowDetails({
+    super.key,
+    required this.text,
+  });
+
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.max,
+      children: [
+        Text(
+          text,
+          style: FlutterFlowTheme.of(context).bodyMedium.override(
+                fontFamily: 'Readex Pro',
+                fontWeight: FontWeight.bold,
+              ),
+        ),
+        Text(
+          FFLocalizations.of(context).getText(
+            'trfv924u' /* : */,
+          ),
+          style: FlutterFlowTheme.of(context).bodyMedium,
+        ),
+      ],
+    );
+  }
+}
+
 class TagsList extends StatelessWidget {
-  TagsList({
+  const TagsList({
     this.tagsString,
     super.key,
   });
 
-  String? tagsString;
+  final String? tagsString;
 
   int calculateValueFromWord(String word) {
     int value = 0;

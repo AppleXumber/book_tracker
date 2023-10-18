@@ -1,0 +1,36 @@
+[33mcommit e2c6a6735362ec726f8dfe08605557c9c8f6871e[m[33m ([m[1;36mHEAD -> [m[1;32mmain[m[33m)[m
+Author: Wayron <wayron.jhonny@gmail.com>
+Date:   Thu Sep 28 11:52:33 2023 -0300
+
+    fab_form_book criado e refatorado, bookDao alterado, e inicio da implementação do List.view.builder na homepage (não funcionou ainda
+
+[33mcommit 6f3acde3818e595849624050650699c7f9193d66[m
+Merge: 2c42c44 792c868
+Author: Wayron <wayron.jhonny@gmail.com>
+Date:   Thu Sep 28 09:13:00 2023 -0300
+
+    Merge branch 'main' of https://github.com/AppleXumber/book_tracker
+
+[33mcommit 792c86884ceb05fd4e0eebce4864532e60b696cb[m
+Author: AppleXumber <wayron.jhonny@gmail.com>
+Date:   Thu Sep 28 00:33:01 2023 -0300
+
+    Arquivos de reading_in_progess/future/done deletados e refatorados para o bookSummary
+
+[33mcommit 5b2c3a67e5f93423f48da617ffd68a7fc0324438[m
+Author: AppleXumber <wayron.jhonny@gmail.com>
+Date:   Wed Sep 27 18:25:07 2023 -0300
+
+    corrigido o nome "editon" para "edition" no publicationdate
+
+[33mcommit 2c42c44e306114d3c6bf026aafc50b272fafa32c[m
+Author: Wayron <wayron.jhonny@gmail.com>
+Date:   Wed Sep 27 11:54:19 2023 -0300
+
+    Poucas mudanças
+
+[33mcommit 3c1354f832d3ceac1f0004248bc8a7a5be9672f6[m
+Author: unknown <wayron.jhonny@gmail.com>
+Date:   Tue Sep 26 17:03:49 2023 -0300
+
+    Projeto inteiro adicionado ao Git
