@@ -1198,6 +1198,7 @@ class _FormBooksWidgetState extends State<FormBooksWidget> {
                                         bookSave.status = book.status;
                                         bookSave.progress = book.progress;
                                       }
+                                      print("Imagem do book Update: ${book.image}");
                                       SQLHelper.updateItem(book.id, bookSave);
                                     } else {
                                       SQLHelper.createItem(bookSave);
@@ -1330,6 +1331,7 @@ class _CapeImageState extends State<CapeImage> {
           _image = imageFile;
           imageExists = true;
           widget.book.image = base64Encode(imageFile.readAsBytesSync());
+          print("Imagem: ${widget.book.image}");
         }));
 
   }

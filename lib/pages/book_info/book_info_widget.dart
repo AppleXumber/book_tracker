@@ -39,61 +39,77 @@ class _BookInfoWidgetState extends State<BookInfoWidget> {
 
   returnImage() {
     Book book = widget.book;
-    if (book.image!.contains("asset")) {
+
+    if (book.image == null) {
       return Image.asset(
-        "${book.image}",
-        width: 100.0,
-        height: 125.0,
-        fit: BoxFit.cover,
-      );
-    } else if (book.image!.contains("http")) {
-      return Image.network(
-        "${book.image}",
+        "assets/images/no_cover_placeholder.jpg",
         width: 100.0,
         height: 125.0,
         fit: BoxFit.cover,
       );
     } else {
-      return Image.memory(
-        base64Decode(showData(book.image)),
-        width: 100.0,
-        height: 125.0,
-        fit: BoxFit.cover,
-      );
-    } /*else {
-      return Image.network(
-        'https://www.lojadobolseiro.com.br/uploads/images/2020/02/76-livro-o-hobbit-capa-smaug-j-r-r-tolkien-1582738560.jpg',
-        width: 100.0,
-        height: 125.0,
-        fit: BoxFit.cover,
-      );
-    }*/
+      if (book.image!.contains("http")) {
+        return Image.network(
+          "${book.image}",
+          width: 100.0,
+          height: 125.0,
+          fit: BoxFit.cover,
+        );
+      } else if (book.image!.isNotEmpty) {
+        return Image.memory(
+          base64Decode(showData(book.image)),
+          width: 100.0,
+          height: 125.0,
+          fit: BoxFit.cover,
+        );
+      } else if (book.image!.contains("asset") || book.image == null) {
+        return Image.asset(
+          "assets/images/no_cover_placeholder.jpg",
+          width: 100.0,
+          height: 125.0,
+          fit: BoxFit.cover,
+        );
+      }
+    }
+
   }
 
   returnBigImage() {
     Book book = widget.book;
-    if (book.image!.contains("asset")) {
+
+    if(book.image == null) {
       return Image.asset(
-        "${book.image}",
+        "assets/images/no_cover_placeholder.jpg",
         width: 300.0,
         height: 200.0,
         fit: BoxFit.contain,
-      );
-    } else if (book.image!.contains("http")) {
-      return Image.network(
-        "${book.image}",
-        width: 300.0,
-        height: 200.0,
-        fit: BoxFit.contain,
+
       );
     } else {
-      return Image.memory(
-        base64Decode(showData(book.image)),
-        width: 300.0,
-        height: 200.0,
-        fit: BoxFit.contain,
-      );
-  }
+      if (book.image!.contains("asset")) {
+        return Image.asset(
+          "${book.image}",
+          width: 300.0,
+          height: 200.0,
+          fit: BoxFit.contain,
+        );
+      } else if (book.image!.contains("http")) {
+        return Image.network(
+          "${book.image}",
+          width: 300.0,
+          height: 200.0,
+          fit: BoxFit.contain,
+        );
+      } else {
+        return Image.memory(
+          base64Decode(showData(book.image)),
+          width: 300.0,
+          height: 200.0,
+          fit: BoxFit.contain,
+        );
+      }
+    }
+
 
   }
 
