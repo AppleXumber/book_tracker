@@ -114,17 +114,7 @@ class _BookSummaryState extends State<BookSummary> {
         );
       }
     }
-
   }
-
-  /*else {
-      return Image.network(
-        'https://www.lojadobolseiro.com.br/uploads/images/2020/02/76-livro-o-hobbit-capa-smaug-j-r-r-tolkien-1582738560.jpg',
-        width: 100.0,
-        height: 125.0,
-        fit: BoxFit.cover,
-      );
-    }*/
 
   @override
   void initState() {
