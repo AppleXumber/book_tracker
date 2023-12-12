@@ -91,16 +91,16 @@ class _BookSummaryState extends State<BookSummary> {
         fit: BoxFit.cover,
       );
     } else {
-      if (book.image!.contains("http")) {
-        return Image.network(
-          "${book.image}",
+      if (book.image!.isNotEmpty) {
+        return Image.memory(
+          base64Decode(showData(book.image)),
           width: 100.0,
           height: 125.0,
           fit: BoxFit.cover,
         );
-      } else if (book.image!.isNotEmpty) {
-        return Image.memory(
-          base64Decode(showData(book.image)),
+      } else if (book.image!.contains("http")) {
+        return Image.network(
+          "${book.image}",
           width: 100.0,
           height: 125.0,
           fit: BoxFit.cover,

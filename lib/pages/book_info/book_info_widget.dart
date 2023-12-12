@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
 import "dart:math";
 import 'package:book_tracker/database/sql_helper.dart';
 
@@ -7,10 +6,7 @@ import '/flutter_flow/flutter_flow_expanded_image_view.dart';
 import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
-import '/flutter_flow/flutter_flow_widgets.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:page_transition/page_transition.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:provider/provider.dart';
 import 'book_info_model.dart';
@@ -48,16 +44,16 @@ class _BookInfoWidgetState extends State<BookInfoWidget> {
         fit: BoxFit.cover,
       );
     } else {
-      if (book.image!.contains("http")) {
-        return Image.network(
-          "${book.image}",
+      if (book.image!.isNotEmpty) {
+        return Image.memory(
+          base64Decode(showData(book.image)),
           width: 100.0,
           height: 125.0,
           fit: BoxFit.cover,
         );
-      } else if (book.image!.isNotEmpty) {
-        return Image.memory(
-          base64Decode(showData(book.image)),
+      } else if (book.image!.contains("http")) {
+        return Image.network(
+          "${book.image}",
           width: 100.0,
           height: 125.0,
           fit: BoxFit.cover,
@@ -71,24 +67,22 @@ class _BookInfoWidgetState extends State<BookInfoWidget> {
         );
       }
     }
-
   }
 
   returnBigImage() {
     Book book = widget.book;
 
-    if(book.image == null) {
+    if (book.image == null) {
       return Image.asset(
         "assets/images/no_cover_placeholder.jpg",
         width: 300.0,
         height: 200.0,
         fit: BoxFit.contain,
-
       );
     } else {
-      if (book.image!.contains("asset")) {
-        return Image.asset(
-          "${book.image}",
+      if (book.image!.isNotEmpty) {
+        return Image.memory(
+          base64Decode(showData(book.image)),
           width: 300.0,
           height: 200.0,
           fit: BoxFit.contain,
@@ -100,17 +94,15 @@ class _BookInfoWidgetState extends State<BookInfoWidget> {
           height: 200.0,
           fit: BoxFit.contain,
         );
-      } else {
-        return Image.memory(
-          base64Decode(showData(book.image)),
+      } else if (book.image!.contains("asset") || book.image == null) {
+        return Image.asset(
+          "${book.image}",
           width: 300.0,
           height: 200.0,
           fit: BoxFit.contain,
         );
       }
     }
-
-
   }
 
   final scaffoldKey = GlobalKey<ScaffoldState>();
@@ -268,7 +260,7 @@ class _BookInfoWidgetState extends State<BookInfoWidget> {
                                       PageTransition(
                                         type: PageTransitionType.fade,
                                         child: FlutterFlowExpandedImageView(
-                                          image: returnImage(),
+                                          image: returnBigImage(),
                                           allowRotation: false,
                                           tag: 'imageTag',
                                           useHeroAnimation: true,
@@ -281,7 +273,7 @@ class _BookInfoWidgetState extends State<BookInfoWidget> {
                                     transitionOnUserGestures: true,
                                     child: ClipRRect(
                                       borderRadius: BorderRadius.circular(18.0),
-                                      child: returnBigImage(),
+                                      child: returnImage(),
                                     ),
                                   ),
                                 ),
