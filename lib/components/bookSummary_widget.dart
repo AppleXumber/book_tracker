@@ -413,7 +413,6 @@ class ModalContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     bool isStartReading = book.status != "toRead";
-    print(isStartReading);
     return Container(
       padding: EdgeInsets.only(
         top: 15,
@@ -594,8 +593,6 @@ class _FormProgressState extends State<FormProgress> {
                   book.chapters = total;
                 }
 
-                print("Progresso do livro ${book.title} : ${book.progress}");
-
                 book.endReading = prediction;
                 SQLHelper.updateItem(book.id, book);
                 context.safePop();
@@ -680,6 +677,8 @@ class StartReadingState extends State<StartReading> {
     super.initState();
   }
 
+  bool _read = false;
+
   @override
   Widget build(BuildContext context) {
     Book book = widget.book;
@@ -714,7 +713,6 @@ class StartReadingState extends State<StartReading> {
                             onChanged: (value) {
                               setState(() {
                                 _howToRead = value.toString();
-                                print(_howToRead);
                               });
                             }),
                       ),
@@ -754,13 +752,34 @@ class StartReadingState extends State<StartReading> {
                               } else {
                                 _howToRead = value.toString();
                               }
-                              print(_howToRead);
                             });
                           },
                         ),
                       ),
                     ],
                   ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 15),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Material(
+                    child: CheckboxListTile(
+                      value: _read,
+                      onChanged: (bool? value) {
+                        setState(() {
+                          _read = value!;
+                        });
+                      },
+                      title: const Text(
+                        "Livro já iniciado",
+                        style: TextStyle(fontWeight: FontWeight.w500),
+                      ),
+                    ),
+                  )
                 ],
               ),
             ),
@@ -785,7 +804,6 @@ class StartReadingState extends State<StartReading> {
                             onChanged: (value) {
                               setState(() {
                                 _howEnd = value.toString();
-                                print(_howEnd);
                               });
                             }),
                       ),
@@ -797,7 +815,6 @@ class StartReadingState extends State<StartReading> {
                           onChanged: (value) {
                             setState(() {
                               _howEnd = value.toString();
-                              print(_howEnd);
                             });
                           },
                         ),
@@ -846,7 +863,6 @@ class StartReadingState extends State<StartReading> {
                               .format(DateTime.now()
                                   .add(Duration(days: howManyDays)));
                           prediction = _dateController.text;
-                          print("Quantos dias: $howManyDays");
                         });
                       },
                     )
@@ -865,18 +881,13 @@ class StartReadingState extends State<StartReading> {
                             lastDate: DateTime(2101));
 
                         if (pickedDate != null) {
-                          print(pickedDate);
                           String formattedDate =
                               DateFormat('dd/MM/yyyy').format(pickedDate);
-                          print(formattedDate);
 
                           howManyDays = int.parse(pickedDate
-                                  .difference(DateTime.now())
-                                  .inDays
-                                  .toString()) +
-                              1;
-
-                          print("Quantos dias: $howManyDays");
+                              .difference(DateTime.now())
+                              .inDays
+                              .toString());
 
                           if (_howToRead == "Páginas") {
                             _goal.text =
@@ -886,8 +897,6 @@ class StartReadingState extends State<StartReading> {
                                 .ceil()
                                 .toString();
                           }
-
-                          print("Goal: ${(book.pages / howManyDays).ceil()}");
                           prediction = DateFormat("dd/MM/yyyy").format(
                               DateTime.now().add(Duration(days: howManyDays)));
 
@@ -922,7 +931,6 @@ class StartReadingState extends State<StartReading> {
               child: FFButtonWidget(
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
-                    print("Teste");
                     book.howToRead = _howToRead;
                     book.goal = _goal.value.text;
                     book.status = "reading";

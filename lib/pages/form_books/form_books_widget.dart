@@ -6,7 +6,6 @@ import 'package:image_picker/image_picker.dart';
 
 import '../../classes/books.dart';
 import '../../classes/show_data.dart';
-import '/flutter_flow/flutter_flow_drop_down.dart';
 import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_radio_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
@@ -1204,11 +1203,10 @@ class _FormBooksWidgetState extends State<FormBooksWidget> {
                                       SQLHelper.createItem(bookSave);
                                     }
                                     context.safePop();
+                                    context.safePop();
                                   });
                                 },
-                                text: FFLocalizations.of(context).getText(
-                                  '7hzfgcuf' /* Salvar */,
-                                ),
+                                text: edit ? "Editar" : "Salvar",
                                 options: FFButtonOptions(
                                   height: 40.0,
                                   padding: EdgeInsetsDirectional.fromSTEB(
@@ -1262,6 +1260,42 @@ class _CapeImageState extends State<CapeImage> {
   late File _image;
   bool imageExists = false;
 
+  returnImage() {
+    Book book = widget.book;
+
+    if (book.image == null) {
+      return Image.asset(
+        "assets/images/no_cover_placeholder.jpg",
+        width: 100.0,
+        height: 125.0,
+        fit: BoxFit.cover,
+      );
+    } else {
+      if (book.image!.isNotEmpty) {
+        return Image.memory(
+          base64Decode(showData(book.image)),
+          width: 100.0,
+          height: 125.0,
+          fit: BoxFit.cover,
+        );
+      } else if (book.image!.contains("http")) {
+        return Image.network(
+          "${book.image}",
+          width: 100.0,
+          height: 125.0,
+          fit: BoxFit.cover,
+        );
+      } else if (book.image!.contains("asset") || book.image == null) {
+        return Image.asset(
+          "assets/images/no_cover_placeholder.jpg",
+          width: 100.0,
+          height: 125.0,
+          fit: BoxFit.cover,
+        );
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     Book book = widget.book;
@@ -1272,19 +1306,7 @@ class _CapeImageState extends State<CapeImage> {
         decoration: BoxDecoration(
           color: FlutterFlowTheme.of(context).secondaryBackground,
         ),
-        child: imageExists
-            ? Image.file(
-                _image,
-                width: 100.0,
-                height: 125.0,
-                fit: BoxFit.cover,
-              )
-            : Image.asset(
-                "assets/images/no_cover_placeholder.jpg",
-                width: 100.0,
-                height: 125.0,
-                fit: BoxFit.cover,
-              ),
+        child: returnImage(),
       ),
       onTap: _pickImage,
     );
