@@ -656,11 +656,15 @@ class StartReading extends StatefulWidget {
 
 class StartReadingState extends State<StartReading> {
   TextEditingController _goal = TextEditingController();
-  TextEditingController _dateController = TextEditingController();
+  TextEditingController _dateEndController = TextEditingController();
+  TextEditingController _dateStartController = TextEditingController();
+  TextEditingController _progressDone = TextEditingController();
 
   String _howToRead = "Páginas";
   String _howEnd = "daily";
   int howManyDays = 0;
+
+  String dateStart = DateFormat("dd/MM/yyyy").format(DateTime.now());
   String prediction = DateFormat("dd/MM/yyyy").format(DateTime.now());
 
   final _formKey = GlobalKey<FormState>();
@@ -682,7 +686,6 @@ class StartReadingState extends State<StartReading> {
   @override
   Widget build(BuildContext context) {
     Book book = widget.book;
-
     return Padding(
       padding: const EdgeInsets.all(5.5),
       child: Form(
@@ -779,6 +782,98 @@ class StartReadingState extends State<StartReading> {
                         style: TextStyle(fontWeight: FontWeight.w500),
                       ),
                     ),
+                  ),
+                  Container(
+                    child: _read == true
+                        ? Row(
+                            children: [
+                              Expanded(
+                                child: TextField(
+                                    controller: _dateStartController,
+                                    decoration: const InputDecoration(
+                                        icon: Icon(Icons.calendar_today),
+                                        labelText: "Data de início"),
+                                    readOnly: true,
+                                    onTap: () async {
+                                      DateTime? pickedDate =
+                                          await showDatePicker(
+                                              context: context,
+                                              initialDate: DateTime.now(),
+                                              firstDate: DateTime(1900),
+                                              lastDate: DateTime.now());
+
+                                      if (pickedDate != null) {
+                                        String formattedDate =
+                                            DateFormat('dd/MM/yyyy')
+                                                .format(pickedDate);
+
+                                        /*if (_howToRead == "Páginas") {
+                                        _goal.text = (book.pages / howManyDays)
+                                            .ceil()
+                                            .toString();
+                                      } else if (_howToRead == "Capitulos") {
+                                        _goal.text =
+                                            (book.chapters! / howManyDays)
+                                                .ceil()
+                                                .toString();
+                                      }*/
+
+                                        /*prediction = DateFormat("dd/MM/yyyy")
+                                          .format(DateTime.now()
+                                              .add(Duration(days: howManyDays)));*/
+
+                                        dateStart = DateFormat("dd/MM/yyyy")
+                                            .format(pickedDate);
+
+                                        setState(() {
+                                          _dateStartController.text =
+                                              formattedDate;
+                                        });
+                                      } else {
+                                        print("Date is not selected");
+                                      }
+                                    }),
+                              ),
+                              Expanded(
+                                  child: TextFormField(
+                                controller: _progressDone,
+                                keyboardType: TextInputType.number,
+                                decoration: InputDecoration(
+                                  icon: Icon(Icons.book),
+                                  hintText: _howToRead == "Páginas"
+                                      ? "$_howToRead já lidas"
+                                      : "$_howToRead já lidos",
+                                ),
+                                onChanged: (value) {
+                                  setState(() {
+                                    if (_goal.text == "" || _goal.text == "0") {
+                                      howManyDays = 0;
+                                    } else {
+                                      if (_howToRead == "Páginas") {
+                                        howManyDays =
+                                            (book.pages / int.parse(_goal.text))
+                                                .ceil();
+                                      } else if (_howToRead == "Capitulos") {
+                                        howManyDays = (book.chapters! /
+                                                int.parse(_goal.text))
+                                            .ceil();
+                                      }
+                                    }
+
+                                    if (int.parse(_goal.text) > book.pages) {
+                                      _goal.text = book.pages.toString();
+                                    }
+                                    _dateEndController.text =
+                                        DateFormat("dd/MM/yyyy").format(
+                                            DateTime.now().add(
+                                                Duration(days: howManyDays)));
+                                    prediction = _dateEndController.text;
+                                  });
+                                },
+                              ))
+                            ],
+                          )
+                        : Container(),
                   )
                 ],
               ),
@@ -859,15 +954,15 @@ class StartReadingState extends State<StartReading> {
                           if (int.parse(_goal.text) > book.pages) {
                             _goal.text = book.pages.toString();
                           }
-                          _dateController.text = DateFormat("dd/MM/yyyy")
+                          _dateEndController.text = DateFormat("dd/MM/yyyy")
                               .format(DateTime.now()
                                   .add(Duration(days: howManyDays)));
-                          prediction = _dateController.text;
+                          prediction = _dateEndController.text;
                         });
                       },
                     )
                   : TextField(
-                      controller: _dateController,
+                      controller: _dateEndController,
                       decoration: const InputDecoration(
                           icon: Icon(Icons.calendar_today),
                           labelText: "Data final"),
@@ -901,7 +996,7 @@ class StartReadingState extends State<StartReading> {
                               DateTime.now().add(Duration(days: howManyDays)));
 
                           setState(() {
-                            _dateController.text = formattedDate;
+                            _dateEndController.text = formattedDate;
                           });
                         } else {
                           print("Date is not selected");
@@ -934,8 +1029,12 @@ class StartReadingState extends State<StartReading> {
                     book.howToRead = _howToRead;
                     book.goal = _goal.value.text;
                     book.status = "reading";
-                    book.startReading =
-                        DateFormat("dd/MM/yyyy").format(DateTime.now());
+                    if (_read) {
+                      book.startReading = dateStart;
+                    } else {
+                      book.startReading =
+                          DateFormat("dd/MM/yyyy").format(DateTime.now());
+                    }
                     book.endReading = prediction;
                     print(
                         "Como ler: ${book.howToRead}\nQuanto ler: ${book.goal}");
