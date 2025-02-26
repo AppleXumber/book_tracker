@@ -1,4 +1,5 @@
 # Book Tracker
+### Esse projeto foi descontinuado. Ele está sendo refeito em [github.com/AppleXumber/book_tracker_api](https://github.com/AppleXumber/book_tracker_api)
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
